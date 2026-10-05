@@ -6,7 +6,6 @@ import {
   clientRespondOrder,
   markOrderDelivered,
 } from "../../services/orderService";
-import "./MyOrders.css";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -167,7 +166,7 @@ export default function MyOrders() {
                   </>
                 )}
 
-                {/* 2. ACCEPTED: Client needs to Approve or Decline Tailor's offer */}
+                {/*ACCEPTED: Client needs to Approve or Decline Tailor's offer */}
                 {order.status === "accepted" && (
                   <div className="flex gap-2 bg-blue-50 p-2 rounded border border-blue-200">
                     <button

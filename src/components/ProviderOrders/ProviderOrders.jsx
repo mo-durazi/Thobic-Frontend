@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./ProviderOrders.css";
 
 export default function ProviderOrders() {
   const [materialOrders, setMaterialOrders] = useState([]);

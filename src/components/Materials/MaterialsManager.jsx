@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./MaterialsManager.css";
 
 export default function MaterialsManager() {
   const [materials, setMaterials] = useState([]);

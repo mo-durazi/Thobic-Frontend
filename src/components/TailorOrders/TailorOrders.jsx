@@ -7,7 +7,6 @@ import {
   markOrderReady,
   markOrderOnTheWay,
 } from "../../services/orderService";
-import "./TailorOrders.css";
 
 export default function TailorOrders() {
   const [orders, setOrders] = useState([]);
