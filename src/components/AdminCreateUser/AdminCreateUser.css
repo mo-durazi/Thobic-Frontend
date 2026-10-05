@@ -1,0 +1,148 @@
+.admin-create-user {
+  min-height: calc(100vh - 88px);
+  padding: 80px 0;
+  background-color: var(--color-background);
+}
+
+.admin-create-user .container {
+  max-width: 760px;
+}
+
+/* Header */
+
+.admin-create-user-header {
+  margin-bottom: 40px;
+}
+
+.admin-create-user-label {
+  margin-bottom: 12px;
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.admin-create-user-header h1 {
+  margin-bottom: 14px;
+  color: var(--color-primary);
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.admin-create-user-header > p:last-child {
+  color: var(--color-text-muted);
+  font-size: 16px;
+}
+
+/* Form */
+
+.admin-create-user-form {
+  padding: 40px;
+  border: 1px solid rgba(86, 26, 35, 0.08);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-field {
+  margin-bottom: 24px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #D8C9C3;
+  border-radius: var(--radius-sm);
+  outline: none;
+  background-color: var(--color-white);
+  color: var(--color-text);
+  transition: border-color 0.2s ease;
+}
+
+.form-field input::placeholder {
+  color: #9B8989;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--color-primary);
+}
+
+/* Messages */
+
+.form-message {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+.form-message-success {
+  background-color: #EDF6EF;
+  color: #35613D;
+}
+
+.form-message-error {
+  background-color: #FBEDEE;
+  color: #8A3038;
+}
+
+/* Button */
+
+.admin-create-user-button {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+}
+
+.admin-create-user-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+  .admin-create-user {
+    min-height: calc(100vh - 76px);
+    padding: 56px 0;
+  }
+
+  .admin-create-user-header h1 {
+    font-size: 40px;
+  }
+
+  .admin-create-user-form {
+    padding: 32px;
+  }
+}
+
+/* Small phones */
+
+@media (max-width: 480px) {
+  .admin-create-user {
+    padding: 40px 0;
+  }
+
+  .admin-create-user-header {
+    margin-bottom: 28px;
+  }
+
+  .admin-create-user-header h1 {
+    font-size: 34px;
+  }
+
+  .admin-create-user-form {
+    padding: 24px 20px;
+  }
+}
