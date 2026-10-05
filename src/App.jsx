@@ -12,6 +12,7 @@ import MyOrders from "./components/MyOrders/MyOrders";
 import TailorOrders from "./components/TailorOrders/TailorOrders";
 import TailorMaterialOrders from "./components/TailorMaterialOrders/TailorMaterialOrders";
 import ProviderOrders from "./components/ProviderOrders/ProviderOrders";
+import MaterialsManager from "./components/Materials/MaterialsManager";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -34,6 +35,9 @@ const App = () => {
           element={<TailorMaterialOrders />}
         />
         <Route path="/provider/orders" element={<ProviderOrders />} />
+        <Route path="/materials/mine" element={<MaterialsManager />} />
+        <Route path="/materials/new" element={<MaterialsManager />} />
+        <Route path="/materials/:id/edit" element={<MaterialsManager />} />
       </Routes>
     </>
   );
