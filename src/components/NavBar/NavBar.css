@@ -1,0 +1,214 @@
+/* ================================
+   Navbar
+   Desktop / Laptop Base Styles
+================================ */
+
+.navbar {
+  width: 100%;
+  background-color: var(--color-background);
+  border-bottom: 1px solid rgba(86, 26, 35, 0.06);
+}
+
+.navbar-container {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+
+/* ================================
+   Logo
+================================ */
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.navbar-logo img {
+  width: 155px;
+  height: auto;
+
+  /* Convert beige logo to Thobic burgundy */
+  filter:
+    brightness(0)
+    saturate(100%)
+    invert(19%)
+    sepia(22%)
+    saturate(1768%)
+    hue-rotate(327deg)
+    brightness(86%)
+    contrast(91%);
+}
+
+
+/* ================================
+   Navigation Links
+================================ */
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navbar-link {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar-link:hover {
+  color: var(--color-primary);
+}
+
+
+/* ================================
+   Actions
+================================ */
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.navbar-user {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navbar-sign-in {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.navbar-sign-in:hover {
+  color: var(--color-primary-dark);
+}
+
+.navbar-sign-up {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 20px;
+
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+
+  background-color: var(--color-primary);
+  color: var(--color-white);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.navbar-sign-up:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+
+/* ================================
+   Tablet
+================================ */
+
+@media (max-width: 1024px) {
+  .navbar-container {
+    gap: 24px;
+  }
+
+  .navbar-links {
+    gap: 22px;
+  }
+
+  .navbar-logo img {
+    width: 140px;
+  }
+
+  .navbar-actions {
+    gap: 14px;
+  }
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 768px) {
+  .navbar-container {
+    min-height: 76px;
+  }
+
+  .navbar-logo img {
+    width: 125px;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+
+  .navbar-actions {
+    gap: 12px;
+  }
+
+  .navbar-user {
+    display: none;
+  }
+
+  .navbar-sign-in {
+    font-size: 13px;
+  }
+
+  .navbar-sign-up {
+    min-height: 38px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+
+/* ================================
+   Small Phones
+================================ */
+
+@media (max-width: 480px) {
+  .navbar-container {
+    min-height: 70px;
+  }
+
+  .navbar-logo img {
+    width: 110px;
+  }
+
+  .navbar-actions {
+    gap: 8px;
+  }
+
+  .navbar-sign-in {
+    font-size: 12px;
+  }
+
+  .navbar-sign-up {
+    min-height: 36px;
+    padding: 7px 11px;
+    font-size: 12px;
+  }
+}
