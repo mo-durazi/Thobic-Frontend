@@ -1,0 +1,289 @@
+/* ================================
+   Landing Page
+   Desktop / Laptop Base Styles
+================================ */
+
+.landing {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.landing .container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ================================
+   Hero
+================================ */
+
+.landing-hero {
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+}
+
+.landing-hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 80px;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-label {
+  margin-bottom: 18px;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.hero-content h1 {
+  margin-bottom: 24px;
+  color: var(--color-primary);
+  font-size: clamp(52px, 5vw, 76px);
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.hero-description {
+  max-width: 520px;
+  margin-bottom: 32px;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-image-placeholder {
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-secondary);
+  color: var(--color-primary);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ================================
+   Features
+================================ */
+
+.landing-features {
+  background-color: var(--color-surface);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+.feature {
+  padding: 20px 0;
+}
+
+.feature h2 {
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.feature p {
+  max-width: 340px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ================================
+   How It Works
+================================ */
+
+.how-it-works {
+  background-color: var(--color-background);
+}
+
+.section-heading {
+  max-width: 650px;
+  margin-bottom: 56px;
+}
+
+.section-label {
+  margin-bottom: 14px;
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.section-heading h2 {
+  color: var(--color-primary);
+  font-size: 48px;
+  font-weight: 600;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+.step {
+  padding-top: 24px;
+  border-top: 1px solid var(--color-secondary);
+}
+
+.step-number {
+  display: block;
+  margin-bottom: 24px;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.step h3 {
+  margin-bottom: 12px;
+  color: var(--color-primary);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.step p {
+  max-width: 300px;
+  color: var(--color-text-muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+
+/* ================================
+   Tablet
+================================ */
+
+@media (max-width: 1024px) {
+  .landing-hero-content {
+    gap: 48px;
+  }
+
+  .hero-content h1 {
+    font-size: 58px;
+  }
+
+  .hero-image-placeholder {
+    min-height: 420px;
+  }
+
+  .features-grid,
+  .steps {
+    gap: 32px;
+  }
+
+  .section-heading h2 {
+    font-size: 42px;
+  }
+}
+
+
+/* ================================
+   Mobile
+================================ */
+
+@media (max-width: 768px) {
+  .landing-hero {
+    min-height: auto;
+  }
+
+  .landing-hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .hero-content {
+    max-width: none;
+  }
+
+  .hero-content h1 {
+    font-size: 48px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .hero-image-placeholder {
+    min-height: 350px;
+  }
+
+  .features-grid,
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .feature {
+    padding: 12px 0;
+  }
+
+  .section-heading {
+    margin-bottom: 40px;
+  }
+
+  .section-heading h2 {
+    font-size: 36px;
+  }
+}
+
+
+/* ================================
+   Small Phones
+================================ */
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 40px;
+  }
+
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .primary-button,
+  .hero-actions .secondary-button {
+    width: 100%;
+  }
+
+  .hero-image-placeholder {
+    min-height: 280px;
+  }
+
+  .feature h2 {
+    font-size: 22px;
+  }
+
+  .section-heading h2 {
+    font-size: 32px;
+  }
+}
