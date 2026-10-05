@@ -10,6 +10,7 @@ import Landing from "./components/Landing/Landing";
 import AdminCreateUser from "./components/AdminCreateUser/AdminCreateUser";
 import MyOrders from "./components/MyOrders/MyOrders";
 import TailorOrders from "./components/TailorOrders/TailorOrders";
+import TailorMaterialOrders from "./components/TailorMaterialOrders/TailorMaterialOrders";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -27,6 +28,10 @@ const App = () => {
         <Route path="/admin/create-user" element={<AdminCreateUser />} />
         <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/tailor/orders" element={<TailorOrders />} />
+        <Route
+          path="/tailor/material-orders"
+          element={<TailorMaterialOrders />}
+        />
       </Routes>
     </>
   );
