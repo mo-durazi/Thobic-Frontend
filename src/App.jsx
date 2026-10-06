@@ -13,6 +13,7 @@ import TailorOrders from "./components/TailorOrders/TailorOrders";
 import TailorMaterialOrders from "./components/TailorMaterialOrders/TailorMaterialOrders";
 import ProviderOrders from "./components/ProviderOrders/ProviderOrders";
 import MaterialsManager from "./components/Materials/MaterialsManager";
+import MyMaterials from "./components/MyMaterials/MyMaterials";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -23,21 +24,56 @@ const App = () => {
   return (
     <>
       <NavBar />
+
       <Routes>
-        <Route path="/" element={user ? <Dashboard /> : <Landing />} />
+        <Route
+          path="/"
+          element={user ? <Dashboard /> : <Landing />}
+        />
+
         <Route path="/sign-up" element={<SignUpForm />} />
+
         <Route path="/sign-in" element={<SignInForm />} />
-        <Route path="/admin/create-user" element={<AdminCreateUser />} />
-        <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/tailor/orders" element={<TailorOrders />} />
+
+        <Route
+          path="/admin/create-user"
+          element={<AdminCreateUser />}
+        />
+
+        <Route
+          path="/my-orders"
+          element={<MyOrders />}
+        />
+
+        <Route
+          path="/tailor/orders"
+          element={<TailorOrders />}
+        />
+
         <Route
           path="/tailor/material-orders"
           element={<TailorMaterialOrders />}
         />
-        <Route path="/provider/orders" element={<ProviderOrders />} />
-        <Route path="/materials/mine" element={<MaterialsManager />} />
-        <Route path="/materials/new" element={<MaterialsManager />} />
-        <Route path="/materials/:id/edit" element={<MaterialsManager />} />
+
+        <Route
+          path="/provider/orders"
+          element={<ProviderOrders />}
+        />
+
+        <Route
+          path="/materials/mine"
+          element={<MyMaterials />}
+        />
+
+        <Route
+          path="/materials/new"
+          element={<MaterialsManager />}
+        />
+
+        <Route
+          path="/materials/:id/edit"
+          element={<MaterialsManager />}
+        />
       </Routes>
     </>
   );
