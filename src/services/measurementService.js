@@ -21,4 +21,37 @@ const handleResponse = async (res) => {
 };
 
 
-export { BASE_URL, authHeaders, handleResponse };
+const createMeasurements = async (measurements) => {
+  try {
+    const res = await fetch(`${BASE_URL}/measurements`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify(measurements),
+    });
+
+    return await handleResponse(res);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message, { cause: err });
+  }
+};
+
+
+const getMyMeasurements = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/measurements/me`, {
+      headers: authHeaders(),
+    });
+
+    // No measurements yet for this client
+    if (res.status === 404) return null;
+
+    return await handleResponse(res);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message, { cause: err });
+  }
+};
+
+
+export { createMeasurements, getMyMeasurements };
