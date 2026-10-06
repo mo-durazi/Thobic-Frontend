@@ -1,420 +1,638 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from 'react';
 
-export default function MaterialsManager() {
+import {
+  getMyMaterials,
+  createMaterial,
+  updateMaterial,
+  deleteMaterial,
+  uploadMaterialImage,
+} from '../../services/materialService';
+
+import './MaterialsManager.css';
+
+const initialFormData = {
+  name: '',
+  colour: '',
+  price: '',
+  description: '',
+  texture: 'smooth',
+  pattern: 'plain',
+  season: 'all_seasons',
+  stand: 'stand',
+  lead_time_days: '',
+  is_available: true,
+  image_url: '',
+};
+
+const MaterialsManager = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Modal / Form state for Add/Edit
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    colour: "",
-    price: "",
-    description: "",
-    texture: "smooth",
-    pattern: "plain",
-    season: "Summer",
-    stand: "Stand",
-    lead_time_days: 0,
-    is_available: true,
-    image_url: "",
-  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
 
-  useEffect(() => {
-    fetchMyMaterials();
-  }, []);
+  const [formData, setFormData] = useState(initialFormData);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   const fetchMyMaterials = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      // Uses your backend route: GET /api/materials/mine
-      const response = await axios.get(
-        "http://localhost:8000/api/materials/mine",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      setMaterials(response.data);
-      setError(null);
+      setError('');
+
+      const data = await getMyMaterials();
+
+      setMaterials(data);
     } catch (err) {
-      setError("Failed to fetch your materials.");
+      setError(err.message || 'Failed to fetch your materials.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpenAdd = () => {
-    setIsEditing(false);
+  useEffect(() => {
+    fetchMyMaterials();
+  }, []);
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setImageFile(null);
+    setImagePreview('');
     setCurrentId(null);
-    setFormData({
-      name: "",
-      colour: "",
-      price: "",
-      description: "",
-      texture: "smooth",
-      pattern: "plain",
-      season: "Summer",
-      stand: "Stand",
-      lead_time_days: 0,
-      is_available: true,
-      image_url: "",
-    });
-    setShowForm(true);
+    setIsEditing(false);
   };
 
-  const handleOpenEdit = (mat) => {
+  const handleOpenAdd = () => {
+    resetForm();
+    setShowForm(true);
+    setError('');
+  };
+
+  const handleOpenEdit = (material) => {
     setIsEditing(true);
-    setCurrentId(mat.id);
+    setCurrentId(material.id);
+
     setFormData({
-      name: mat.name,
-      colour: mat.colour,
-      price: mat.price,
-      description: mat.description || "",
-      texture: mat.texture,
-      pattern: mat.pattern,
-      season: mat.season,
-      stand: mat.stand,
-      lead_time_days: mat.lead_time_days || 0,
-      is_available: mat.is_available,
-      image_url: mat.image_url || "",
+      name: material.name || '',
+      colour: material.colour || '',
+      price: material.price ?? '',
+      description: material.description || '',
+      texture: material.texture || 'smooth',
+      pattern: material.pattern || 'plain',
+      season: material.season || 'all_seasons',
+      stand: material.stand || 'stand',
+      lead_time_days: material.lead_time_days ?? '',
+      is_available: material.is_available ?? true,
+      image_url: material.image_url || '',
     });
+
+    setImageFile(null);
+    setImagePreview(material.image_url || '');
     setShowForm(true);
+    setError('');
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
+  const handleCloseForm = () => {
+    if (saving) {
+      return;
+    }
 
-      if (isEditing) {
-        await axios.put(
-          `http://localhost:8000/api/materials/${currentId}`,
-          formData,
-          { headers },
-        );
-        alert("Material updated successfully!");
-      } else {
-        await axios.post("http://localhost:8000/api/materials", formData, {
-          headers,
-        });
-        alert("Material added successfully!");
+    setShowForm(false);
+    resetForm();
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file.');
+      return;
+    }
+
+    setError('');
+    setImageFile(file);
+
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setError('');
+    setSaving(true);
+
+    try {
+      let imageUrl = formData.image_url;
+
+      if (imageFile) {
+        const uploadResponse = await uploadMaterialImage(imageFile);
+        imageUrl = uploadResponse.image_url;
       }
 
+      const materialData = {
+        name: formData.name.trim(),
+        colour: formData.colour.trim(),
+        price: Number(formData.price),
+        description: formData.description.trim() || null,
+        texture: formData.texture,
+        pattern: formData.pattern,
+        season: formData.season,
+        stand: formData.stand,
+        lead_time_days:
+          formData.lead_time_days !== ''
+            ? Number(formData.lead_time_days)
+            : null,
+        is_available: formData.is_available,
+        image_url: imageUrl || null,
+      };
+
+      if (isEditing) {
+        await updateMaterial(currentId, materialData);
+      } else {
+        await createMaterial(materialData);
+      }
+
+      await fetchMyMaterials();
+
       setShowForm(false);
-      fetchMyMaterials();
+      resetForm();
     } catch (err) {
-      alert(err.response?.data?.detail || "Operation failed.");
+      setError(err.message || 'Operation failed.');
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this material?"))
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this material?'
+    );
+
+    if (!confirmed) {
       return;
+    }
+
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:8000/api/materials/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      setError('');
+
+      await deleteMaterial(id);
+
+      await fetchMyMaterials();
+    } catch (err) {
+      setError(err.message || 'Failed to delete material.');
+    }
+  };
+
+  const toggleAvailability = async (material) => {
+    try {
+      setError('');
+
+      await updateMaterial(material.id, {
+        name: material.name,
+        colour: material.colour,
+        price: material.price,
+        description: material.description,
+        texture: material.texture,
+        pattern: material.pattern,
+        season: material.season,
+        stand: material.stand,
+        lead_time_days: material.lead_time_days,
+        is_available: !material.is_available,
+        image_url: material.image_url,
       });
-      alert("Material deleted.");
-      fetchMyMaterials();
-    } catch (err) {
-      alert("Failed to delete material.");
-    }
-  };
 
-  const toggleAvailability = async (mat) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/api/materials/${mat.id}`,
-        {
-          ...mat,
-          is_available: !mat.is_available,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+      await fetchMyMaterials();
+    } catch (err) {
+      setError(
+        err.message || 'Failed to update material availability.'
       );
-      fetchMyMaterials();
-    } catch (err) {
-      alert("Failed to update availability.");
     }
   };
 
-  if (loading)
-    return <p className="text-center mt-10">Loading your stock...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  if (loading) {
+    return (
+      <main className="materials-manager-page">
+        <div className="materials-manager-message">
+          Loading your materials...
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Manage My Materials Stock</h1>
-        <button
-          onClick={handleOpenAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700"
-        >
-          + Add New Material
-        </button>
-      </div>
+    <main className="materials-manager-page">
+      <div className="materials-manager-container">
+        <div className="materials-manager-header">
+          <div>
+            <h1 className="materials-manager-title">
+              Manage My Materials
+            </h1>
 
-      {/* Add/Edit Form Modal */}
-      {showForm && (
-        <div className="bg-gray-50 border p-6 rounded-lg mb-8 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">
-            {isEditing ? "Edit Material" : "Add New Material"}
-          </h2>
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            <p className="materials-manager-subtitle">
+              Add, update, and manage your material inventory.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="materials-add-button"
+            onClick={handleOpenAdd}
           >
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Material Name *
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Colour *
-              </label>
-              <input
-                type="text"
-                value={formData.colour}
-                onChange={(e) =>
-                  setFormData({ ...formData, colour: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Price per Metre ($) *
-              </label>
-              <input
-                type="number"
-                step="0.1"
-                value={formData.price}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    price: parseFloat(e.target.value),
-                  })
-                }
-                className="w-full border p-2 rounded text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Lead Time (Days)
-              </label>
-              <input
-                type="number"
-                value={formData.lead_time_days}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    lead_time_days: parseInt(e.target.value),
-                  })
-                }
-                className="w-full border p-2 rounded text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Texture
-              </label>
-              <select
-                value={formData.texture}
-                onChange={(e) =>
-                  setFormData({ ...formData, texture: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-              >
-                <option value="smooth">Smooth</option>
-                <option value="rough">Rough</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Pattern
-              </label>
-              <select
-                value={formData.pattern}
-                onChange={(e) =>
-                  setFormData({ ...formData, pattern: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-              >
-                <option value="plain">Plain</option>
-                <option value="pattern">Pattern</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Season
-              </label>
-              <select
-                value={formData.season}
-                onChange={(e) =>
-                  setFormData({ ...formData, season: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-              >
-                <option value="Summer">Summer</option>
-                <option value="Winter">Winter</option>
-                <option value="Spring">Spring</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Stand Quality
-              </label>
-              <select
-                value={formData.stand}
-                onChange={(e) =>
-                  setFormData({ ...formData, stand: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-              >
-                <option value="Stand">Stand</option>
-                <option value="half-Stand">Half-Stand</option>
-                <option value="loose">Loose</option>
-              </select>
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Image URL
-              </label>
-              <input
-                type="text"
-                value={formData.image_url}
-                onChange={(e) =>
-                  setFormData({ ...formData, image_url: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-                placeholder="https://..."
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                className="w-full border p-2 rounded text-sm"
-                rows="2"
-              />
-            </div>
-            <div className="flex items-center gap-2 md:col-span-2">
-              <input
-                type="checkbox"
-                checked={formData.is_available}
-                onChange={(e) =>
-                  setFormData({ ...formData, is_available: e.target.checked })
-                }
-                id="is_avail"
-              />
-              <label htmlFor="is_avail" className="text-sm font-medium">
-                Available for clients to order
-              </label>
-            </div>
+            + Add Material
+          </button>
+        </div>
 
-            <div className="flex gap-4 md:col-span-2 pt-2">
-              <button
-                type="submit"
-                className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700"
-              >
-                {isEditing ? "Save Changes" : "Create Material"}
-              </button>
+        {error && (
+          <div className="materials-manager-error">
+            {error}
+          </div>
+        )}
+
+        {showForm && (
+          <section className="material-form-card">
+            <div className="material-form-header">
+              <div>
+                <h2>
+                  {isEditing
+                    ? 'Edit Material'
+                    : 'Add New Material'}
+                </h2>
+
+                <p>
+                  Enter the material information below.
+                </p>
+              </div>
+
               <button
                 type="button"
-                onClick={() => setShowForm(false)}
-                className="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400"
+                className="material-form-close"
+                onClick={handleCloseForm}
+                disabled={saving}
               >
-                Cancel
+                ×
               </button>
             </div>
-          </form>
-        </div>
-      )}
 
-      {/* Materials Table */}
-      {materials.length === 0 ? (
-        <p className="text-center text-gray-500 py-10">
-          You have no materials listed in your inventory.
-        </p>
-      ) : (
-        <div className="overflow-x-auto border rounded-lg shadow-sm bg-white">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-100 border-b text-xs text-gray-600 uppercase">
-                <th className="p-3">Name</th>
-                <th className="p-3">Colour</th>
-                <th className="p-3">Price/m</th>
-                <th className="p-3">Season</th>
-                <th className="p-3">Status</th>
-                <th className="p-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y text-sm">
-              {materials.map((mat) => (
-                <tr key={mat.id} className="hover:bg-gray-50">
-                  <td className="p-3 font-medium">{mat.name}</td>
-                  <td className="p-3 text-gray-600">{mat.colour}</td>
-                  <td className="p-3 text-gray-600">${mat.price}</td>
-                  <td className="p-3 text-gray-600">{mat.season}</td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => toggleAvailability(mat)}
-                      className={`px-2 py-0.5 text-xs font-semibold rounded ${
-                        mat.is_available
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-600"
-                      }`}
-                    >
-                      {mat.is_available ? "Available" : "Unavailable"}
-                    </button>
-                  </td>
-                  <td className="p-3 text-right space-x-2">
-                    <button
-                      onClick={() => handleOpenEdit(mat)}
-                      className="bg-blue-50 text-blue-600 px-2.5 py-1 text-xs rounded hover:bg-blue-100"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(mat.id)}
-                      className="bg-red-50 text-red-600 px-2.5 py-1 text-xs rounded hover:bg-red-100"
-                    >
-                      Delete
-                    </button>
-                  </td>
+            <form
+              className="material-form"
+              onSubmit={handleSubmit}
+            >
+              <div className="material-form-grid">
+                <div className="material-field">
+                  <label htmlFor="name">
+                    Material Name
+                  </label>
+
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="colour">
+                    Colour
+                  </label>
+
+                  <input
+                    id="colour"
+                    name="colour"
+                    type="text"
+                    value={formData.colour}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="price">
+                    Price
+                  </label>
+
+                  <input
+                    id="price"
+                    name="price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="lead_time_days">
+                    Lead Time (Days)
+                  </label>
+
+                  <input
+                    id="lead_time_days"
+                    name="lead_time_days"
+                    type="number"
+                    min="0"
+                    value={formData.lead_time_days}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="texture">
+                    Texture
+                  </label>
+
+                  <select
+                    id="texture"
+                    name="texture"
+                    value={formData.texture}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="smooth">Smooth</option>
+                    <option value="rough">Rough</option>
+                  </select>
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="pattern">
+                    Pattern
+                  </label>
+
+                  <select
+                    id="pattern"
+                    name="pattern"
+                    value={formData.pattern}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="plain">Plain</option>
+                    <option value="patterned">Patterned</option>
+                  </select>
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="season">
+                    Season
+                  </label>
+
+                  <select
+                    id="season"
+                    name="season"
+                    value={formData.season}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="summer">Summer</option>
+                    <option value="winter">Winter</option>
+                    <option value="all_seasons">
+                      All Seasons
+                    </option>
+                    <option value="spring">Spring</option>
+                  </select>
+                </div>
+
+                <div className="material-field">
+                  <label htmlFor="stand">
+                    Stand
+                  </label>
+
+                  <select
+                    id="stand"
+                    name="stand"
+                    value={formData.stand}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="stand">Stand</option>
+                    <option value="half_stand">
+                      Half Stand
+                    </option>
+                    <option value="loose">Loose</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="material-field">
+                <label htmlFor="description">
+                  Description
+                </label>
+
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  value={formData.description}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="material-field">
+                <label htmlFor="material-image">
+                  Material Image
+                </label>
+
+                <input
+                  id="material-image"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+
+                {imagePreview && (
+                  <div className="material-image-preview">
+                    <img
+                      src={imagePreview}
+                      alt="Material preview"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="material-availability-field">
+                <input
+                  id="is_available"
+                  name="is_available"
+                  type="checkbox"
+                  checked={formData.is_available}
+                  onChange={(event) =>
+                    setFormData((current) => ({
+                      ...current,
+                      is_available:
+                        event.target.checked,
+                    }))
+                  }
+                />
+
+                <label htmlFor="is_available">
+                  Available for clients to order
+                </label>
+              </div>
+
+              <div className="material-form-actions">
+                <button
+                  type="button"
+                  className="material-cancel-button"
+                  onClick={handleCloseForm}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="material-save-button"
+                  disabled={saving}
+                >
+                  {saving
+                    ? 'Saving...'
+                    : isEditing
+                      ? 'Save Changes'
+                      : 'Create Material'}
+                </button>
+              </div>
+            </form>
+          </section>
+        )}
+
+        {materials.length === 0 ? (
+          <div className="materials-empty-state">
+            <h2>No Materials Yet</h2>
+
+            <p>
+              Add your first material to start managing
+              your inventory.
+            </p>
+
+            {!showForm && (
+              <button
+                type="button"
+                className="materials-empty-button"
+                onClick={handleOpenAdd}
+              >
+                Add Your First Material
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="materials-table-wrapper">
+            <table className="materials-table">
+              <thead>
+                <tr>
+                  <th>Material</th>
+                  <th>Colour</th>
+                  <th>Price</th>
+                  <th>Season</th>
+                  <th>Availability</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+              </thead>
+
+              <tbody>
+                {materials.map((material) => (
+                  <tr key={material.id}>
+                    <td>
+                      <div className="material-table-info">
+                        {material.image_url ? (
+                          <img
+                            src={material.image_url}
+                            alt={material.name}
+                            className="material-table-image"
+                          />
+                        ) : (
+                          <div className="material-table-placeholder">
+                            No image
+                          </div>
+                        )}
+
+                        <span>
+                          {material.name}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>{material.colour}</td>
+
+                    <td>
+                      {material.price}
+                    </td>
+
+                    <td>
+                      {material.season}
+                    </td>
+
+                    <td>
+                      <button
+                        type="button"
+                        className={`material-status ${
+                          material.is_available
+                            ? 'available'
+                            : 'unavailable'
+                        }`}
+                        onClick={() =>
+                          toggleAvailability(material)
+                        }
+                      >
+                        <span className="status-dot" />
+
+                        {material.is_available
+                          ? 'Available'
+                          : 'Unavailable'}
+                      </button>
+                    </td>
+
+                    <td>
+                      <div className="material-actions">
+                        <button
+                          type="button"
+                          className="material-edit-button"
+                          onClick={() =>
+                            handleOpenEdit(material)
+                          }
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          type="button"
+                          className="material-delete-button"
+                          onClick={() =>
+                            handleDelete(material.id)
+                          }
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </main>
   );
-}
+};
+
+export default MaterialsManager;
