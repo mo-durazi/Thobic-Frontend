@@ -70,4 +70,24 @@ const updateMeasurements = async (measurements) => {
 };
 
 
-export { createMeasurements, getMyMeasurements, updateMeasurements };
+const deleteMeasurements = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/measurements/me`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+
+    return await handleResponse(res);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message, { cause: err });
+  }
+};
+
+
+export {
+  createMeasurements,
+  getMyMeasurements,
+  updateMeasurements,
+  deleteMeasurements,
+};

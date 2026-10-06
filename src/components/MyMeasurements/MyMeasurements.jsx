@@ -3,13 +3,17 @@ import { Link, Navigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
-import { getMyMeasurements } from '../../services/measurementService';
+import {
+  deleteMeasurements,
+  getMyMeasurements,
+} from '../../services/measurementService';
 
 const MyMeasurements = () => {
   const { user } = useContext(UserContext);
   const [measurements, setMeasurements] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
   const isClient = user?.role === 'client';
 
@@ -29,6 +33,17 @@ const MyMeasurements = () => {
 
     loadMeasurements();
   }, [isClient]);
+
+  const handleDelete = async () => {
+    setDeleteError('');
+
+    try {
+      await deleteMeasurements();
+      setMeasurements(null);
+    } catch (err) {
+      setDeleteError(err.message);
+    }
+  };
 
   if (!user) return <Navigate to="/sign-in" />;
 
@@ -60,6 +75,8 @@ const MyMeasurements = () => {
     <main>
       <h1>My Measurements</h1>
 
+      {deleteError && <p>{deleteError}</p>}
+
       {measurements ? (
         <>
           <ul>
@@ -70,6 +87,9 @@ const MyMeasurements = () => {
             ))}
           </ul>
           <Link to="/measurements/edit">Edit My Measurements</Link>
+          <button type="button" onClick={handleDelete}>
+            Delete My Measurements
+          </button>
         </>
       ) : (
         <>
