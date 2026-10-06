@@ -31,3 +31,16 @@ const getShops = async (filters = {}) => {
     throw new Error(err.message, { cause: err });
   }
 };
+
+const getShopProfile = async (shopId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/shops/${shopId}`);
+
+    return await handleResponse(res);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message, { cause: err });
+  }
+};
+
+export { getShops, getShopProfile }; 
