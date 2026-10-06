@@ -16,6 +16,7 @@ import MaterialsManager from "./components/Materials/MaterialsManager";
 import MyMaterials from "./components/MyMaterials/MyMaterials";
 import MyMeasurements from "./components/MyMeasurements/MyMeasurements";
 import MeasurementForm from "./components/MeasurementForm/MeasurementForm";
+import ShopProfile from "./components/ShopProfile/ShopProfile";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -90,6 +91,11 @@ const App = () => {
         <Route
           path="/measurements/edit"
           element={<MeasurementForm key="edit" isEdit />}
+        />
+
+        <Route
+          path="/shops/:shopId"
+          element={<ShopProfile />}
         />
       </Routes>
     </>
