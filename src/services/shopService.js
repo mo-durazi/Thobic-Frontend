@@ -6,9 +6,11 @@ const handleResponse = async (res) => {
   const data = text ? JSON.parse(text) : null;
 
   if (!res.ok) {
-    throw new Error(
-      data?.detail || `Request failed with status ${res.status}`
-    );
+    // FastAPI 422 returns detail as an array of { loc, msg, type }
+    const detail = Array.isArray(data?.detail)
+      ? data.detail.map((d) => d.msg).join(', ')
+      : data?.detail;
+    throw new Error(detail || `Request failed with status ${res.status}`);
   }
 
   return data;
