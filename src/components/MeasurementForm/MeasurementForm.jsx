@@ -1,9 +1,13 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
-import { createMeasurements } from '../../services/measurementService';
+import {
+  createMeasurements,
+  getMyMeasurements,
+  updateMeasurements,
+} from '../../services/measurementService';
 
 const initialState = Object.fromEntries(
   MEASUREMENT_FIELDS.map((field) => [field.name, ''])
@@ -13,11 +17,42 @@ const MeasurementForm = ({ isEdit = false }) => {
   const { user } = useContext(UserContext);
   const [formData, setFormData] = useState(initialState);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(isEdit);
   const navigate = useNavigate();
+
+  const isClient = user?.role === 'client';
+
+  useEffect(() => {
+    if (!isEdit || !isClient) return;
+
+    const loadMeasurements = async () => {
+      try {
+        const data = await getMyMeasurements();
+
+        // Nothing to edit yet
+        if (!data) {
+          navigate('/measurements');
+          return;
+        }
+
+        setFormData(
+          Object.fromEntries(
+            MEASUREMENT_FIELDS.map(({ name }) => [name, String(data[name] ?? '')])
+          )
+        );
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMeasurements();
+  }, [isEdit, isClient, navigate]);
 
   if (!user) return <Navigate to="/sign-in" />;
 
-  if (user.role !== 'client') {
+  if (!isClient) {
     return (
       <main>
         <p>Only clients can manage measurements.</p>
@@ -37,18 +72,25 @@ const MeasurementForm = ({ isEdit = false }) => {
       Object.entries(formData).map(([name, value]) => [name, parseFloat(value)])
     );
 
-    if (isEdit) {
-      console.log(values);
-      return;
-    }
-
     try {
-      await createMeasurements(values);
+      if (isEdit) {
+        await updateMeasurements(values);
+      } else {
+        await createMeasurements(values);
+      }
       navigate('/measurements');
     } catch (err) {
       setError(err.message);
     }
   };
+
+  if (loading) {
+    return (
+      <main>
+        <p>Loading...</p>
+      </main>
+    );
+  }
 
   return (
     <main>

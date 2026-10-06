@@ -54,4 +54,20 @@ const getMyMeasurements = async () => {
 };
 
 
-export { createMeasurements, getMyMeasurements };
+const updateMeasurements = async (measurements) => {
+  try {
+    const res = await fetch(`${BASE_URL}/measurements/me`, {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify(measurements),
+    });
+
+    return await handleResponse(res);
+  } catch (err) {
+    console.log(err);
+    throw new Error(err.message, { cause: err });
+  }
+};
+
+
+export { createMeasurements, getMyMeasurements, updateMeasurements };
