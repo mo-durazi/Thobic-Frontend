@@ -32,7 +32,7 @@ const NavBar = () => {
             Home
           </Link>
 
-          <a href="#tailors" className="navbar-link">
+          <a href="/shops" className="navbar-link">
             Tailors
           </a>
 
