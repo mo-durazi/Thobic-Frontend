@@ -14,6 +14,8 @@ import TailorMaterialOrders from "./components/TailorMaterialOrders/TailorMateri
 import ProviderOrders from "./components/ProviderOrders/ProviderOrders";
 import MaterialsManager from "./components/Materials/MaterialsManager";
 import MyMaterials from "./components/MyMaterials/MyMaterials";
+import MyMeasurements from "./components/MyMeasurements/MyMeasurements";
+import MeasurementForm from "./components/MeasurementForm/MeasurementForm";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -73,6 +75,21 @@ const App = () => {
         <Route
           path="/materials/:id/edit"
           element={<MaterialsManager />}
+        />
+
+        <Route
+          path="/measurements"
+          element={<MyMeasurements />}
+        />
+
+        <Route
+          path="/measurements/new"
+          element={<MeasurementForm key="new" />}
+        />
+
+        <Route
+          path="/measurements/edit"
+          element={<MeasurementForm key="edit" isEdit />}
         />
       </Routes>
     </>
