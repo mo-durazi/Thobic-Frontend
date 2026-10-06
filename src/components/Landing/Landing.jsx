@@ -1,4 +1,5 @@
 import './Landing.css';
+import { Link } from 'react-router';
 
 const Landing = () => {
   return (
@@ -27,9 +28,9 @@ const Landing = () => {
                 Get Started
               </button>
 
-              <button className="secondary-button">
+              <Link to="/shops" className="secondary-button">
                 Browse Tailors
-              </button>
+              </Link>
             </div>
           </div>
 
