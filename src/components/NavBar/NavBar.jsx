@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { removeToken } from '../../lib/helpers/jwt-helpers';
+import { getNavLinks } from '../../lib/navLinks';
 import { currentUser } from '../../services/userService';
 
 import './NavBar.css';
@@ -54,19 +55,11 @@ const NavBar = () => {
 
         {/* Navigation */}
         <nav className="navbar-links">
-          <Link to="/" className="navbar-link">
-            Home
-          </Link>
-
-          <Link to="/shops" className="navbar-link">
-            Tailors
-          </Link>
-
-          {!user && (
-            <Link to="/#how-it-works" className="navbar-link">
-              How It Works
+          {getNavLinks(user).map(({ to, label }) => (
+            <Link key={to} to={to} className="navbar-link">
+              {label}
             </Link>
-          )}
+          ))}
         </nav>
 
         {/* User Actions */}
