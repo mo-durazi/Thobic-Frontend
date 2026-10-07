@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router";
 import {
   getMyOrders,
   tailorAcceptOrder,
@@ -12,6 +13,7 @@ export default function TailorOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
 
   // State for the Accept Modal/Form (price & final deadline inputs)
   const [acceptingOrderId, setAcceptingOrderId] = useState(null);
@@ -93,6 +95,7 @@ export default function TailorOrders() {
       <h1 className="text-3xl font-bold mb-6 text-center">
         Tailor Orders Management
       </h1>
+      <label className="order-filter">Filter by status <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">All statuses</option>{[...new Set(orders.map((o) => o.status))].map((status) => <option key={status} value={status}>{status.replace(/_/g, " ")}</option>)}</select></label>
 
       {orders.length === 0 ? (
         <p className="text-center text-gray-500 py-10">
@@ -100,7 +103,7 @@ export default function TailorOrders() {
         </p>
       ) : (
         <div className="space-y-6">
-          {orders.map((order) => (
+          {orders.filter((order) => statusFilter === "all" || order.status === statusFilter).map((order) => (
             <div
               key={order.id}
               className="border rounded-lg p-5 bg-white shadow-sm flex flex-col md:flex-row justify-between gap-4"
@@ -170,6 +173,7 @@ export default function TailorOrders() {
 
               {/* Action Column */}
               <div className="flex flex-col justify-center gap-2 min-w-[180px]">
+                <Link to={`/tailor/orders/${order.id}`} className="secondary-button">Review order</Link>
                 {/* 1. PENDING: Accept or Reject */}
                 {order.status === "pending" && (
                   <>
