@@ -1,7 +1,16 @@
+import { useEffect } from 'react';
 import './Landing.css';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 const Landing = () => {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+
+    document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+  }, [hash]);
+
   return (
     <main className="landing">
 
@@ -76,7 +85,7 @@ const Landing = () => {
       </section>
 
       {/* How It Works Section */}
-      <section className="how-it-works section">
+      <section id="how-it-works" className="how-it-works section">
         <div className="container">
 
           <div className="section-heading">
