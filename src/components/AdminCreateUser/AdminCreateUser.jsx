@@ -7,6 +7,7 @@ const initialFormData = {
   username: '',
   email: '',
   password: '',
+  confirmPassword: '',
   role: 'tailor',
 };
 
@@ -20,6 +21,7 @@ const AdminCreateUser = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    setError('');
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -31,10 +33,23 @@ const AdminCreateUser = () => {
 
     setMessage('');
     setError('');
+
+    const { username, email, password, confirmPassword, role } = formData;
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords don't match.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      await createUserByAdmin(formData);
+      await createUserByAdmin({ username, email, password, role });
 
       setMessage('Account created successfully.');
 
@@ -99,6 +114,23 @@ const AdminCreateUser = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter password"
+              minLength={8}
+              required
+            />
+
+            <p className="form-hint">At least 8 characters.</p>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="confirmPassword">Confirm password</label>
+
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Re-enter password"
               required
             />
           </div>
