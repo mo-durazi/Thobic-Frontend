@@ -14,10 +14,12 @@ export const NAV_LINKS = {
     { to: '/tailor/orders', label: 'Orders' },
     { to: '/tailor/material-orders', label: 'Material Orders' },
     { to: '/materials/mine', label: 'My Materials' },
+    { to: '/profile', label: 'Profile' },
   ],
   provider: [
     { to: '/provider/orders', label: 'Orders' },
     { to: '/materials/mine', label: 'My Materials' },
+    { to: '/profile', label: 'Profile' },
   ],
   admin: [
     { to: '/admin/create-user', label: 'Create Account' },
