@@ -19,6 +19,7 @@ import MeasurementForm from "./components/MeasurementForm/MeasurementForm";
 import ShopProfile from "./components/ShopProfile/ShopProfile";
 import ShopList from "./components/ShopList/ShopList";
 import OrderForm from "./components/OrderForm/OrderForm";
+import OrderDetails from "./components/OrderDetails/OrderDetails";
 
 
 // Context
@@ -49,6 +50,11 @@ const App = () => {
         <Route
           path="/my-orders"
           element={<MyOrders />}
+        />
+
+        <Route
+          path="/my-orders/:orderId"
+          element={<OrderDetails />}
         />
 
         <Route

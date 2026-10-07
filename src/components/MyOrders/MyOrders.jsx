@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import {
   getMyOrders,
   deleteOrder,
@@ -125,6 +125,13 @@ export default function MyOrders() {
                 </div>
 
                 <p className="text-sm text-gray-600">
+                  Shop: {order.tailor_name || `Shop #${order.tailor_id}`}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Material:{" "}
+                  {order.material_name || `Material #${order.material_id}`}
+                </p>
+                <p className="text-sm text-gray-600">
                   Material Amount: {order.material_amount} meters
                 </p>
                 <p className="text-sm text-gray-600">
@@ -146,24 +153,21 @@ export default function MyOrders() {
 
               {/* Action Buttons based on order status */}
               <div className="flex flex-wrap gap-2 items-center">
-                {/* 1. PENDING: Can Edit or Delete */}
+                <Link
+                  to={`/my-orders/${order.id}`}
+                  className="bg-gray-100 text-gray-700 px-3 py-1.5 text-sm rounded hover:bg-gray-200"
+                >
+                  View
+                </Link>
+
+                {/* 1. PENDING: Can Delete */}
                 {order.status === "pending" && (
-                  <>
-                    <button
-                      onClick={() =>
-                        alert("Edit view route can be connected here")
-                      }
-                      className="bg-gray-100 text-gray-700 px-3 py-1.5 text-sm rounded hover:bg-gray-200"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(order.id)}
-                      className="bg-red-50 text-red-600 px-3 py-1.5 text-sm rounded hover:bg-red-100"
-                    >
-                      Delete
-                    </button>
-                  </>
+                  <button
+                    onClick={() => handleDelete(order.id)}
+                    className="bg-red-50 text-red-600 px-3 py-1.5 text-sm rounded hover:bg-red-100"
+                  >
+                    Delete
+                  </button>
                 )}
 
                 {/*ACCEPTED: Client needs to Approve or Decline Tailor's offer */}

@@ -13,7 +13,7 @@ export const getMyOrders = async () => {
 };
 
 // Get a single order by ID
-const getOrderById = async (orderId) => {
+export const getOrderById = async (orderId) => {
   const response = await API.get(`/orders/${orderId}`);
   return response.data;
 };
