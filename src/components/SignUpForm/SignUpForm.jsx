@@ -1,9 +1,10 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 
 // Services
 import * as authService from '../../services/authService';
 import { UserContext } from '../../contexts/UserContext';
+import { getRoleHome } from '../../lib/roleHome';
 
 
 const SignUpForm = () => {
@@ -15,7 +16,9 @@ const SignUpForm = () => {
     password: '',
     passwordConf: '',
   });
-  const { setUser } = useContext(UserContext);
+  const { user: currentUser, setUser } = useContext(UserContext);
+
+  if (currentUser) return <Navigate to={getRoleHome(currentUser.role)} replace />;
 
   const { username, email, password, passwordConf } = formData;
 
@@ -31,7 +34,7 @@ const SignUpForm = () => {
     const user = await authService.signUp(payload)
 
     setUser(user); // this line will print the form data to the console
-    navigate('/')
+    navigate(getRoleHome(user.role), { replace: true })
   };
 
   const isFormInvalid = () => {

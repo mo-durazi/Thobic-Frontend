@@ -1,32 +1,13 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
+import { Navigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
-import { currentUser } from '../../services/userService';
+import { getRoleHome } from '../../lib/roleHome';
 
 const Dashboard = () => {
   const { user } = useContext(UserContext);
 
-  useEffect(()=> {
-    async function getCurrentUser(){
-      try {
-        const signedInUser = await currentUser()
-        console.log(signedInUser)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    getCurrentUser()
-  }, [user])
-
-  return (
-    <main>
-      <h1>Welcome, {user.username}</h1>
-      <p>
-        This is the dashboard page where you can see a list of all the users.
-      </p>
-    </main>
-  );
+  return <Navigate to={getRoleHome(user.role)} replace />;
 };
 
 export default Dashboard;
