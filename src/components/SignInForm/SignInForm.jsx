@@ -1,18 +1,21 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 
 import { signIn } from '../../services/authService';
 
 import { UserContext } from '../../contexts/UserContext';
+import { getRoleHome } from '../../lib/roleHome';
 
 const SignInForm = () => {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+
+  if (user) return <Navigate to={getRoleHome(user.role)} replace />;
 
   const handleChange = (evt) => {
     setMessage('');
@@ -24,7 +27,7 @@ const SignInForm = () => {
     try {
       const signedInUser = await signIn(formData);
       setUser(signedInUser);
-      navigate('/');
+      navigate(getRoleHome(signedInUser.role), { replace: true });
     } catch (err) {
       setMessage(err.message);
     }

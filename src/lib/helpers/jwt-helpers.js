@@ -1,8 +1,20 @@
 export function getUserFromToken(){
-    // pull the raw token from local storage
     const token = localStorage.getItem('token');
 
-   return parseToken(token)
+    // login out the user after token expiration
+    try {
+        const payload = parseToken(token)
+
+        if (payload?.exp && payload.exp * 1000 <= Date.now()) {
+            removeToken()
+            return null
+        }
+
+        return payload
+    } catch {
+        removeToken()
+        return null
+    }
 }
 
 export function parseToken(token){

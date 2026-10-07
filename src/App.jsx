@@ -20,6 +20,9 @@ import ShopProfile from "./components/ShopProfile/ShopProfile";
 import ShopList from "./components/ShopList/ShopList";
 import OrderForm from "./components/OrderForm/OrderForm";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
+import Forbidden from "./components/Forbidden/Forbidden";
+import NotFound from "./components/NotFound/NotFound";
+import RoleRoute from "./components/RoleRoute/RoleRoute";
 
 
 // Context
@@ -44,62 +47,110 @@ const App = () => {
 
         <Route
           path="/admin/create-user"
-          element={<AdminCreateUser />}
+          element={
+            <RoleRoute roles={["admin"]}>
+              <AdminCreateUser />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/my-orders"
-          element={<MyOrders />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <MyOrders />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/my-orders/:orderId"
-          element={<OrderDetails />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <OrderDetails />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/tailor/orders"
-          element={<TailorOrders />}
+          element={
+            <RoleRoute roles={["tailor"]}>
+              <TailorOrders />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/tailor/material-orders"
-          element={<TailorMaterialOrders />}
+          element={
+            <RoleRoute roles={["tailor"]}>
+              <TailorMaterialOrders />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/provider/orders"
-          element={<ProviderOrders />}
+          element={
+            <RoleRoute roles={["provider"]}>
+              <ProviderOrders />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/materials/mine"
-          element={<MyMaterials />}
+          element={
+            <RoleRoute roles={["tailor", "provider"]}>
+              <MyMaterials />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/materials/new"
-          element={<MaterialsManager />}
+          element={
+            <RoleRoute roles={["tailor", "provider"]}>
+              <MaterialsManager />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/materials/:id/edit"
-          element={<MaterialsManager />}
+          element={
+            <RoleRoute roles={["tailor", "provider"]}>
+              <MaterialsManager />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/measurements"
-          element={<MyMeasurements />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <MyMeasurements />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/measurements/new"
-          element={<MeasurementForm key="new" />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <MeasurementForm key="new" />
+            </RoleRoute>
+          }
         />
 
         <Route
           path="/measurements/edit"
-          element={<MeasurementForm key="edit" isEdit />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <MeasurementForm key="edit" isEdit />
+            </RoleRoute>
+          }
         />
 
         <Route
@@ -113,7 +164,21 @@ const App = () => {
         />
         <Route
           path="/shops/:shopId/order"
-          element={<OrderForm />}
+          element={
+            <RoleRoute roles={["client"]}>
+              <OrderForm />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="/forbidden"
+          element={<Forbidden />}
+        />
+
+        <Route
+          path="/not-found"
+          element={<NotFound />}
         />
       </Routes>
     </>
