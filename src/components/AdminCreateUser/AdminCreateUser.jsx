@@ -3,13 +3,15 @@ import { createUserByAdmin } from '../../services/userService';
 
 import './AdminCreateUser.css';
 
+const initialFormData = {
+  username: '',
+  email: '',
+  password: '',
+  role: 'tailor',
+};
+
 const AdminCreateUser = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    role: 'client',
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -36,12 +38,7 @@ const AdminCreateUser = () => {
 
       setMessage('Account created successfully.');
 
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        role: 'client',
-      });
+      setFormData(initialFormData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -56,7 +53,7 @@ const AdminCreateUser = () => {
           <p className="admin-create-user-label">ADMIN</p>
           <h1>Create Account</h1>
           <p>
-            Create a new client, tailor, or provider account.
+            Create a tailor shop or material provider account.
           </p>
         </div>
 
@@ -116,9 +113,8 @@ const AdminCreateUser = () => {
               onChange={handleChange}
               required
             >
-              <option value="client">Client</option>
-              <option value="tailor">Tailor</option>
-              <option value="provider">Provider</option>
+              <option value="tailor">Tailor shop</option>
+              <option value="provider">Material provider</option>
             </select>
           </div>
 
