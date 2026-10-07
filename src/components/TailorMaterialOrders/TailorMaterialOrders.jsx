@@ -89,6 +89,8 @@ export default function TailorMaterialOrders() {
                 <p className="text-sm text-gray-600">
                   Thoub Order Reference ID: #{matOrder.thoub_order_id}
                 </p>
+                <p className="text-sm text-gray-600">Provider: {matOrder.provider_name || '—'}</p>
+                <p className="text-sm text-gray-600">Material: {matOrder.material_name || '—'}</p>
                 <p className="text-sm text-gray-600">
                   Amount Ordered: {matOrder.amount} meters | Price: $
                   {matOrder.price}

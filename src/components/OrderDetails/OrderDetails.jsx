@@ -24,6 +24,14 @@ const STATUS_LABELS = {
   cancelled: 'Cancelled',
 };
 
+const MATERIAL_ORDER_STATUS_LABELS = {
+  pending: 'Waiting for the provider',
+  accepted: 'Accepted by the provider',
+  on_the_way: 'On the way to the tailor',
+  delivered: 'Delivered to the tailor',
+  rejected: 'Rejected by the provider',
+};
+
 const TIMELINE_STEPS = [
   'pending',
   'accepted',
@@ -231,7 +239,21 @@ const OrderDetails = () => {
         )}
       </section>
 
-      {(order.material_order || order.material_order_status) && <section className="order-info"><h2>Provider material delivery</h2><p><strong>Status:</strong> {(order.material_order?.status || order.material_order_status).replace(/_/g, ' ')}</p>{(order.material_order?.expected_delivery_date || order.expected_material_delivery_date) && <p><strong>Expected delivery:</strong> {formatDate(order.material_order?.expected_delivery_date || order.expected_material_delivery_date)}</p>}</section>}
+      {order.material_order_status && (
+        <section className="order-info">
+          <h2>Provider material delivery</h2>
+          <p>
+            <strong>Status:</strong>{' '}
+            {MATERIAL_ORDER_STATUS_LABELS[order.material_order_status] ?? order.material_order_status}
+          </p>
+          {order.expected_material_delivery_date && (
+            <p>
+              <strong>Expected delivery:</strong>{' '}
+              {formatDate(order.expected_material_delivery_date)}
+            </p>
+          )}
+        </section>
+      )}
 
       <section className="order-style">
         <h2>Style</h2>
