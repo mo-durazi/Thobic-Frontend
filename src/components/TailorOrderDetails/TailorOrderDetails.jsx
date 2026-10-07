@@ -11,6 +11,8 @@ import {
   markOrderOnTheWay,
 } from "../../services/orderService";
 
+import "./TailorOrderDetails.css";
+
 const getErrorMessage = (err, fallback) => {
   const detail = err?.response?.data?.detail;
   if (typeof detail === "string") return detail;

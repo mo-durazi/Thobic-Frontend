@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import { getMyOrders } from '../../services/orderService';
 import { getMyProfile, updateMyProfile } from '../../services/profileService';
 
+import "./TailorDashboard.css";
+
 const STATUS_OPTIONS = [
   { value: 'open', label: 'Open' },
   { value: 'busy', label: 'Busy' },
