@@ -33,6 +33,7 @@ const getErrorMessage = (err) => {
 };
 
 const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
+  const [sourceRole, setSourceRole] = useState('tailor');
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -42,7 +43,9 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
   const [detailsMaterial, setDetailsMaterial] = useState(null);
 
   useEffect(() => {
-    const sourceFilter = { source_id: shopId };
+    const sourceFilter = sourceRole === 'tailor'
+      ? { source_id: shopId, source_role: 'tailor' }
+      : { source_role: 'provider' };
 
     const loadMaterials = async () => {
       setLoading(true);
@@ -50,7 +53,7 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
 
       try {
         const data = await getMaterials({ ...sourceFilter, ...appliedFilters });
-        setMaterials(data ?? []);
+        setMaterials((data ?? []).filter((material) => material.is_available !== false));
       } catch (err) {
         setMaterials([]);
         setError(getErrorMessage(err));
@@ -60,7 +63,7 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
     };
 
     loadMaterials();
-  }, [shopId, appliedFilters]);
+  }, [shopId, sourceRole, appliedFilters]);
 
   const handleFilterChange = (event) => {
     setFilterForm({ ...filterForm, [event.target.name]: event.target.value });
@@ -114,7 +117,9 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
         <p className="material-picker-status">
           {hasActiveFilters
             ? 'No materials match these filters.'
-            : 'This shop has no available materials.'}
+            : sourceRole === 'tailor'
+              ? 'This shop has no available materials.'
+              : 'No provider fabrics are available right now.'}
         </p>
       );
     }
@@ -155,6 +160,11 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
                     <strong>Pattern:</strong> {getMaterialLabel('pattern', material.pattern)}
                   </p>
                 )}
+                {material.source_name && (
+                  <p className="material-card-source">
+                    <strong>Source:</strong> {material.source_name}
+                  </p>
+                )}
                 <p className="material-card-price">{material.price} BHD / metre</p>
               </div>
 
@@ -189,6 +199,31 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
 
   return (
     <div className="material-picker-container">
+      <div className="material-source-tabs" role="tablist" aria-label="Fabric source">
+        <button
+          type="button"
+          role="tab"
+          id="material-tab-tailor"
+          aria-selected={sourceRole === 'tailor'}
+          aria-controls="material-tab-panel"
+          className={`material-source-tab${sourceRole === 'tailor' ? ' active' : ''}`}
+          onClick={() => setSourceRole('tailor')}
+        >
+          This shop's fabrics
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="material-tab-provider"
+          aria-selected={sourceRole === 'provider'}
+          aria-controls="material-tab-panel"
+          className={`material-source-tab${sourceRole === 'provider' ? ' active' : ''}`}
+          onClick={() => setSourceRole('provider')}
+        >
+          Provider fabrics
+        </button>
+      </div>
+
       <div className="material-filters" onKeyDown={handleFilterKeyDown}>
         {SELECT_FILTERS.map(({ name, label }) => (
           <label
@@ -266,7 +301,9 @@ const MaterialPicker = ({ shopId, selectedMaterialId, onSelect }) => {
         </div>
       </div>
 
-      {renderMaterials()}
+      <div id="material-tab-panel" role="tabpanel" aria-labelledby={sourceRole === 'tailor' ? 'material-tab-tailor' : 'material-tab-provider'}>
+        {renderMaterials()}
+      </div>
 
       {detailsMaterial && (
         <MaterialDetailsModal
