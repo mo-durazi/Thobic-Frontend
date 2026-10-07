@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
+import { getStyleFieldLabel, getStyleOptionLabel } from "../../lib/styleOptions";
 import {
   getOrderById,
   tailorAcceptOrder,
@@ -22,9 +23,6 @@ const getErrorMessage = (err, fallback) => {
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString() : "—";
-
-const formatStyleKey = (key) =>
-  key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 
 const MATERIAL_ORDER_STATUS_LABELS = {
   pending: "Waiting for the provider",
@@ -197,7 +195,7 @@ const TailorOrderDetails = () => {
           <ul>
             {styleEntries.map(([k, v]) => (
               <li key={k}>
-                {formatStyleKey(k)}: {String(v)}
+                {getStyleFieldLabel(k)}: {getStyleOptionLabel(k, String(v))}
               </li>
             ))}
           </ul>

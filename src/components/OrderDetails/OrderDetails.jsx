@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
+import { getStyleFieldLabel, getStyleOptionLabel } from '../../lib/styleOptions';
 import {
   clientRespondOrder,
   deleteOrder,
@@ -55,9 +56,6 @@ const getErrorMessage = (err, fallback) => {
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString() : '—';
-
-const formatStyleKey = (key) =>
-  key.replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 
 const OrderDetails = () => {
   const { user } = useContext(UserContext);
@@ -261,7 +259,7 @@ const OrderDetails = () => {
           <ul>
             {styleEntries.map(([key, value]) => (
               <li key={key}>
-                {formatStyleKey(key)}: {String(value)}
+                {getStyleFieldLabel(key)}: {getStyleOptionLabel(key, String(value))}
               </li>
             ))}
           </ul>

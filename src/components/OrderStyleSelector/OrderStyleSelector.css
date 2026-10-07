@@ -1,0 +1,115 @@
+.order-style-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-style-selector-title {
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 22px;
+}
+
+.order-style-group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.order-style-group-title {
+  margin-bottom: 12px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.order-style-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+  gap: 12px;
+}
+
+.order-style-option {
+  position: relative;
+  cursor: pointer;
+}
+
+.order-style-option-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.order-style-option-card {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid rgba(86, 26, 35, .14);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.order-style-option:hover .order-style-option-card {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.order-style-option.selected .order-style-option-card,
+.order-style-option-input:checked + .order-style-option-card {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(86, 26, 35, .12);
+}
+
+.order-style-option-input:focus-visible + .order-style-option-card {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.order-style-option-image {
+  display: grid;
+  min-height: 116px;
+  place-items: center;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.order-style-option-image img {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+}
+
+.order-style-option-image-placeholder {
+  color: var(--color-text-muted);
+  font-size: .85rem;
+}
+
+.order-style-option-label {
+  padding: 10px 10px 4px;
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: center;
+}
+
+.order-style-option-check {
+  min-height: 28px;
+  padding: 2px 8px 8px;
+  color: var(--color-text-muted);
+  font-size: .75rem;
+  text-align: center;
+}
+
+.order-style-option.selected .order-style-option-check {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .order-style-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
