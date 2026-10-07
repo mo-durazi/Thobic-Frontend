@@ -1,21 +1,23 @@
-import { useContext, useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router';
+import { useContext, useEffect, useState } from "react";
+import { Link, Navigate } from "react-router";
 
-import { UserContext } from '../../contexts/UserContext';
-import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
+import { UserContext } from "../../contexts/UserContext";
+import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
 import {
   deleteMeasurements,
   getMyMeasurements,
-} from '../../services/measurementService';
+} from "../../services/measurementService";
+
+import "./MyMeasurements.css";
 
 const MyMeasurements = () => {
   const { user } = useContext(UserContext);
   const [measurements, setMeasurements] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [deleteError, setDeleteError] = useState('');
+  const [error, setError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
-  const isClient = user?.role === 'client';
+  const isClient = user?.role === "client";
 
   useEffect(() => {
     if (!isClient) return;
@@ -35,7 +37,7 @@ const MyMeasurements = () => {
   }, [isClient]);
 
   const handleDelete = async () => {
-    setDeleteError('');
+    setDeleteError("");
 
     try {
       await deleteMeasurements();
@@ -45,57 +47,79 @@ const MyMeasurements = () => {
     }
   };
 
-  if (!user) return <Navigate to="/sign-in" />;
+  if (!user) {
+    return <Navigate to="/sign-in" />;
+  }
 
   if (!isClient) {
     return (
-      <main>
-        <p>Only clients can manage measurements.</p>
+      <main className="measurements-page">
+        <div className="measurements-empty">
+          <p>Only clients can manage measurements.</p>
+        </div>
       </main>
     );
   }
 
   if (loading) {
     return (
-      <main>
-        <p>Loading measurements...</p>
+      <main className="measurements-page">
+        <p className="measurements-status">Loading measurements...</p>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main>
-        <p>{error}</p>
+      <main className="measurements-page">
+        <div className="measurements-empty">
+          <p>{error}</p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main>
+    <main className="measurements-page">
       <h1>My Measurements</h1>
 
-      {deleteError && <p>{deleteError}</p>}
+      {deleteError && (
+        <p className="measurements-message" role="alert">
+          {deleteError}
+        </p>
+      )}
 
       {measurements ? (
-        <>
-          <ul>
+        <section className="measurements-card">
+          <div className="measurements-grid">
             {MEASUREMENT_FIELDS.map(({ name, label }) => (
-              <li key={name}>
-                {label}: {measurements[name]} cm
-              </li>
+              <div className="measurement-item" key={name}>
+                <span className="measurement-item-label">{label}</span>
+                <span className="measurement-item-value">
+                  {measurements[name]} cm
+                </span>
+              </div>
             ))}
-          </ul>
-          <Link to="/measurements/edit">Edit My Measurements</Link>
-          <button type="button" onClick={handleDelete}>
-            Delete My Measurements
-          </button>
-        </>
+          </div>
+
+          <div className="measurements-actions">
+            <Link to="/measurements/edit">
+              Edit My Measurements
+            </Link>
+
+            <button type="button" onClick={handleDelete}>
+              Delete My Measurements
+            </button>
+          </div>
+        </section>
       ) : (
-        <>
+        <section className="measurements-empty">
           <p>You haven't added your measurements yet.</p>
-          <Link to="/measurements/new">Add Measurements</Link>
-        </>
+
+          <Link className="primary-button" to="/measurements/new">
+            Add Measurements
+          </Link>
+        </section>
       )}
     </main>
   );

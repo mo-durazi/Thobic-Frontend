@@ -38,13 +38,29 @@ const App = () => {
       <NavBar />
 
       <Routes>
-        <Route path="/" element={user ? <Dashboard /> : <Landing />} />
+        <Route
+          path="/"
+          element={user ? <Dashboard /> : <Landing />}
+        />
 
-        <Route path="/tailor" element={<RoleRoute roles={["tailor"]}><TailorDashboard /></RoleRoute>} />
+        <Route
+          path="/tailor"
+          element={
+            <RoleRoute roles={["tailor"]}>
+              <TailorDashboard />
+            </RoleRoute>
+          }
+        />
 
-        <Route path="/sign-up" element={<SignUpForm />} />
+        <Route
+          path="/sign-up"
+          element={<SignUpForm />}
+        />
 
-        <Route path="/sign-in" element={<SignInForm />} />
+        <Route
+          path="/sign-in"
+          element={<SignInForm />}
+        />
 
         <Route
           path="/admin/create-user"
@@ -81,6 +97,7 @@ const App = () => {
             </RoleRoute>
           }
         />
+
         <Route
           path="/tailor/orders/:orderId"
           element={
@@ -144,6 +161,8 @@ const App = () => {
           }
         />
 
+        {/* Measurements */}
+
         <Route
           path="/measurements"
           element={
@@ -171,9 +190,18 @@ const App = () => {
           }
         />
 
-        <Route path="/shops/:shopId" element={<ShopProfile />} />
+        {/* Shops */}
 
-        <Route path="/shops" element={<ShopList />} />
+        <Route
+          path="/shops/:shopId"
+          element={<ShopProfile />}
+        />
+
+        <Route
+          path="/shops"
+          element={<ShopList />}
+        />
+
         <Route
           path="/shops/:shopId/order"
           element={
@@ -183,9 +211,17 @@ const App = () => {
           }
         />
 
-        <Route path="/forbidden" element={<Forbidden />} />
+        {/* Other */}
 
-        <Route path="/not-found" element={<NotFound />} />
+        <Route
+          path="/forbidden"
+          element={<Forbidden />}
+        />
+
+        <Route
+          path="/not-found"
+          element={<NotFound />}
+        />
 
         <Route
           path="/profile"
@@ -196,7 +232,10 @@ const App = () => {
           }
         />
 
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="*"
+          element={<NotFound />}
+        />
       </Routes>
     </>
   );

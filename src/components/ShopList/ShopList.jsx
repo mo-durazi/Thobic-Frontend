@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import { getShops } from '../../services/shopService';
 
-//import './ShopList.css';
+import './ShopList.css';
 
 const STATUS_LABELS = {
   open: 'Open',

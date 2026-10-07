@@ -1,0 +1,127 @@
+.measurement-form-page {
+  width: min(100% - 32px, 1040px);
+  margin: 40px auto 72px;
+}
+
+.measurement-form-card {
+  padding: 32px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.measurement-form-header {
+  margin-bottom: 28px;
+}
+
+.measurement-form-header h1 {
+  margin-bottom: 8px;
+  color: var(--color-primary);
+}
+
+.measurement-form-header p {
+  max-width: 680px;
+  color: var(--color-text-muted);
+}
+
+.measurement-form-error {
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+.measurement-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.measurement-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.measurement-form-field label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.measurement-input-wrapper {
+  position: relative;
+}
+
+.measurement-input-wrapper input {
+  width: 100%;
+  padding: 13px 52px 13px 14px;
+  border: 1px solid rgba(86, 26, 35, 0.2);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.measurement-input-wrapper input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(86, 26, 35, 0.08);
+}
+
+.measurement-input-wrapper span {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.measurement-form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.measurement-form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .measurement-form-page {
+    margin-top: 28px;
+    margin-bottom: 48px;
+  }
+
+  .measurement-form-card {
+    padding: 24px;
+  }
+
+  .measurement-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .measurement-form-page {
+    width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .measurement-form-card {
+    padding: 20px;
+  }
+
+  .measurement-form-actions {
+    flex-direction: column;
+  }
+
+  .measurement-form-actions a,
+  .measurement-form-actions button {
+    width: 100%;
+  }
+}

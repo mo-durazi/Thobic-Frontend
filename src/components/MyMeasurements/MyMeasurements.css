@@ -1,0 +1,152 @@
+/* ------------------------ My Measurements ------------------------ */
+
+.measurements-page {
+  width: min(100% - 32px, 1040px);
+  margin: 40px auto 72px;
+}
+
+.measurements-page h1 {
+  margin-bottom: 24px;
+  color: var(--color-primary);
+}
+
+/* ------------------------ Empty State ------------------------ */
+
+.measurements-empty {
+  padding: 40px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.measurements-empty p {
+  margin-bottom: 20px;
+  color: var(--color-text-muted);
+}
+
+/* ------------------------ Measurements Card ------------------------ */
+
+.measurements-card {
+  padding: 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.measurements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.measurement-item {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+}
+
+.measurement-item-label {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.measurement-item-value {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ------------------------ Actions ------------------------ */
+
+.measurements-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.measurements-actions button {
+  padding: 12px 20px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.measurements-actions button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.measurements-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.measurements-actions a:hover {
+  background-color: var(--color-secondary);
+}
+
+/* ------------------------ Messages ------------------------ */
+
+.measurements-message {
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 14px;
+}
+
+.measurements-status {
+  color: var(--color-text-muted);
+}
+
+/* ------------------------ Responsive ------------------------ */
+
+@media (max-width: 768px) {
+  .measurements-page {
+    margin-top: 28px;
+    margin-bottom: 48px;
+  }
+
+  .measurements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .measurements-page {
+    width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .measurements-card,
+  .measurements-empty {
+    padding: 20px;
+  }
+
+  .measurements-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .measurements-actions {
+    flex-direction: column;
+  }
+
+  .measurements-actions a,
+  .measurements-actions button {
+    width: 100%;
+  }
+}
