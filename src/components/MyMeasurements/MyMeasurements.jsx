@@ -8,8 +8,6 @@ import {
   getMyMeasurements,
 } from '../../services/measurementService';
 
-import './MyMeasurements.css';
-
 const MyMeasurements = () => {
   const { user } = useContext(UserContext);
   const [measurements, setMeasurements] = useState(null);
@@ -47,79 +45,57 @@ const MyMeasurements = () => {
     }
   };
 
-  if (!user) {
-    return <Navigate to="/sign-in" />;
-  }
+  if (!user) return <Navigate to="/sign-in" />;
 
   if (!isClient) {
     return (
-      <main className="measurements-page">
-        <div className="measurements-empty">
-          <p>Only clients can manage measurements.</p>
-        </div>
+      <main>
+        <p>Only clients can manage measurements.</p>
       </main>
     );
   }
 
   if (loading) {
     return (
-      <main className="measurements-page">
-        <p className="measurements-status">Loading measurements...</p>
+      <main>
+        <p>Loading measurements...</p>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="measurements-page">
-        <div className="measurements-empty">
-          <p>{error}</p>
-        </div>
+      <main>
+        <p>{error}</p>
       </main>
     );
   }
 
   return (
-    <main className="measurements-page">
+    <main>
       <h1>My Measurements</h1>
 
-      {deleteError && (
-        <p className="measurements-message" role="alert">
-          {deleteError}
-        </p>
-      )}
+      {deleteError && <p>{deleteError}</p>}
 
       {measurements ? (
-        <section className="measurements-card">
-          <div className="measurements-grid">
+        <>
+          <ul>
             {MEASUREMENT_FIELDS.map(({ name, label }) => (
-              <div className="measurement-item" key={name}>
-                <span className="measurement-item-label">{label}</span>
-                <span className="measurement-item-value">
-                  {measurements[name]} cm
-                </span>
-              </div>
+              <li key={name}>
+                {label}: {measurements[name]} cm
+              </li>
             ))}
-          </div>
-
-          <div className="measurements-actions">
-            <Link to="/measurements/form">
-              Edit My Measurements
-            </Link>
-
-            <button type="button" onClick={handleDelete}>
-              Delete My Measurements
-            </button>
-          </div>
-        </section>
+          </ul>
+          <Link to="/measurements/edit">Edit My Measurements</Link>
+          <button type="button" onClick={handleDelete}>
+            Delete My Measurements
+          </button>
+        </>
       ) : (
-        <section className="measurements-empty">
+        <>
           <p>You haven't added your measurements yet.</p>
-
-          <Link className="primary-button" to="/measurements/form">
-            Add Measurements
-          </Link>
-        </section>
+          <Link to="/measurements/new">Add Measurements</Link>
+        </>
       )}
     </main>
   );
