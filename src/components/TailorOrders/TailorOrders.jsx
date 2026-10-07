@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
+
 import {
   getMyOrders,
   tailorAcceptOrder,
@@ -9,13 +10,14 @@ import {
   markOrderOnTheWay,
 } from "../../services/orderService";
 
+import "./TailorOrders.css";
+
 export default function TailorOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
 
-  // State for the Accept Modal/Form (price & final deadline inputs)
   const [acceptingOrderId, setAcceptingOrderId] = useState(null);
   const [acceptForm, setAcceptForm] = useState({
     price: "",
@@ -41,30 +43,46 @@ export default function TailorOrders() {
 
   const handleReject = async (orderId) => {
     if (!window.confirm("Are you sure you want to reject this order?")) return;
+
     try {
       const updated = await tailorRejectOrder(orderId);
-      setOrders(orders.map((o) => (o.id === orderId ? updated : o)));
+
+      setOrders(
+        orders.map((o) => (o.id === orderId ? updated : o))
+      );
+
       alert("Order rejected.");
     } catch (err) {
-      alert(err.response?.data?.detail || "Failed to reject order.");
+      alert(
+        err.response?.data?.detail || "Failed to reject order."
+      );
     }
   };
 
   const handleAcceptSubmit = async (e, orderId) => {
     e.preventDefault();
+
     try {
       const updated = await tailorAcceptOrder(orderId, {
         price: parseFloat(acceptForm.price),
         final_deadline: acceptForm.final_deadline,
       });
-      setOrders(orders.map((o) => (o.id === orderId ? updated : o)));
+
+      setOrders(
+        orders.map((o) => (o.id === orderId ? updated : o))
+      );
+
       setAcceptingOrderId(null);
-      setAcceptForm({ price: "", final_deadline: "" });
+      setAcceptForm({
+        price: "",
+        final_deadline: "",
+      });
+
       alert("Order accepted and sent to client for review!");
     } catch (err) {
       alert(
         err.response?.data?.detail ||
-          "Failed to accept order. Check minimum price rules.",
+          "Failed to accept order. Check minimum price rules."
       );
     }
   };
@@ -72,149 +90,201 @@ export default function TailorOrders() {
   const handleProgressStep = async (orderId, step) => {
     try {
       let updated;
-      if (step === "in-progress") updated = await markOrderInProgress(orderId);
-      if (step === "ready") updated = await markOrderReady(orderId);
-      if (step === "on-the-way") updated = await markOrderOnTheWay(orderId);
 
-      setOrders(orders.map((o) => (o.id === orderId ? updated : o)));
+      if (step === "in-progress") {
+        updated = await markOrderInProgress(orderId);
+      }
+
+      if (step === "ready") {
+        updated = await markOrderReady(orderId);
+      }
+
+      if (step === "on-the-way") {
+        updated = await markOrderOnTheWay(orderId);
+      }
+
+      setOrders(
+        orders.map((o) => (o.id === orderId ? updated : o))
+      );
+
       alert(`Order status updated to ${step}!`);
     } catch (err) {
       alert(
         err.response?.data?.detail ||
-          "Action failed. Check constraint rules (e.g., material delivery status).",
+          "Action failed. Check constraint rules (e.g., material delivery status)."
       );
     }
   };
 
-  if (loading)
-    return <p className="text-center mt-10">Loading tailor orders...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+  if (loading) {
+    return (
+      <main className="tailor-orders-page">
+        <p className="tailor-orders-message">
+          Loading tailor orders...
+        </p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="tailor-orders-page">
+        <p className="tailor-orders-message tailor-orders-error">
+          {error}
+        </p>
+      </main>
+    );
+  }
+
+  const filteredOrders = orders.filter(
+    (order) =>
+      statusFilter === "all" || order.status === statusFilter
+  );
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">
+    <main className="tailor-orders-page">
+      <h1 className="tailor-orders-title">
         Tailor Orders Management
       </h1>
-      <label className="order-filter">Filter by status <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">All statuses</option>{[...new Set(orders.map((o) => o.status))].map((status) => <option key={status} value={status}>{status.replace(/_/g, " ")}</option>)}</select></label>
+
+      <label className="tailor-orders-filter">
+        <span>Filter by status</span>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="all">All statuses</option>
+
+          {[...new Set(orders.map((o) => o.status))].map(
+            (status) => (
+              <option key={status} value={status}>
+                {status.replace(/\_/g, " ")}
+              </option>
+            )
+          )}
+        </select>
+      </label>
 
       {orders.length === 0 ? (
-        <p className="text-center text-gray-500 py-10">
-          No orders assigned to your shop yet.
-        </p>
+        <div className="tailor-orders-empty">
+          <p>No orders assigned to your shop yet.</p>
+        </div>
       ) : (
-        <div className="space-y-6">
-          {orders.filter((order) => statusFilter === "all" || order.status === statusFilter).map((order) => (
-            <div
+        <div className="tailor-orders-list">
+          {filteredOrders.map((order) => (
+            <article
               key={order.id}
-              className="border rounded-lg p-5 bg-white shadow-sm flex flex-col md:flex-row justify-between gap-4"
+              className="tailor-order-card"
             >
-              <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-lg">Order #{order.id}</span>
-                  <span
-                    className={`px-2 py-0.5 text-xs font-bold rounded uppercase ${
-                      order.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "accepted"
-                          ? "bg-blue-100 text-blue-800"
-                          : order.status === "confirmed"
-                            ? "bg-indigo-100 text-indigo-800"
-                            : order.status === "in_progress"
-                              ? "bg-purple-100 text-purple-800"
-                              : order.status === "ready"
-                                ? "bg-teal-100 text-teal-800"
-                                : order.status === "on_the_way"
-                                  ? "bg-orange-100 text-orange-800"
-                                  : order.status === "delivered"
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {order.status.replace(/_/g, " ")}
+              <div className="tailor-order-main">
+                <div className="tailor-order-heading">
+                  <span className="tailor-order-id">
+                    Order #{order.id}
+                  </span>
+
+                  <span className="tailor-order-status">
+                    {order.status.replace(/\_/g, " ")}
                   </span>
                 </div>
 
-                <p className="text-sm text-gray-700">
-                  <strong>Material Amount:</strong> {order.material_amount}{" "}
-                  meters
+                <p className="tailor-order-info">
+                  <strong>Material Amount:</strong>{" "}
+                  {order.material_amount} meters
                 </p>
-                <p className="text-sm text-gray-700">
+
+                <p className="tailor-order-info">
                   <strong>Requested Deadline:</strong>{" "}
                   {order.requested_deadline || "None"}
                 </p>
+
                 {order.price && (
-                  <p className="text-sm text-green-700 font-semibold">
-                    Agreed Price: ${order.price} | Final Deadline:{" "}
+                  <p className="tailor-order-price">
+                    Agreed Price: {order.price} BHD | Final Deadline:{" "}
                     {order.final_deadline}
                   </p>
                 )}
 
-                {/* Style & Measurements Snapshot Preview */}
-                <div className="bg-gray-50 p-3 rounded mt-2 text-xs text-gray-600 grid grid-cols-2 gap-2">
+                <div className="tailor-order-preview">
                   <div>
-                    <span className="font-semibold">Style:</span>{" "}
+                    <strong>Style:</strong>{" "}
                     {JSON.stringify(order.style)}
                   </div>
+
                   <div>
-                    <span className="font-semibold">
-                      Measurements (Neck/Chest/Arm):
-                    </span>{" "}
+                    <strong>
+                      Measurements (Neck / Chest / Arm):
+                    </strong>{" "}
                     {order.measurements_snapshot?.neck} /{" "}
                     {order.measurements_snapshot?.chest} /{" "}
                     {order.measurements_snapshot?.arm} cm
                   </div>
                 </div>
+
                 {order.note && (
-                  <p className="text-xs italic text-gray-500 mt-1">
+                  <p className="tailor-order-note">
                     Client Note: "{order.note}"
                   </p>
                 )}
               </div>
 
-              {/* Action Column */}
-              <div className="flex flex-col justify-center gap-2 min-w-[180px]">
-                <Link to={`/tailor/orders/${order.id}`} className="secondary-button">Review order</Link>
-                {/* 1. PENDING: Accept or Reject */}
+              <div className="tailor-order-actions">
+                <Link
+                  to={`/tailor/orders/${order.id}`}
+                  className="secondary-button"
+                >
+                  Review order
+                </Link>
+
                 {order.status === "pending" && (
                   <>
                     <button
+                      type="button"
                       onClick={() =>
                         setAcceptingOrderId(
-                          acceptingOrderId === order.id ? null : order.id,
+                          acceptingOrderId === order.id
+                            ? null
+                            : order.id
                         )
                       }
-                      className="bg-blue-600 text-white px-4 py-2 text-sm rounded hover:bg-blue-700"
+                      className="tailor-order-action-button tailor-order-action-primary"
                     >
                       {acceptingOrderId === order.id
                         ? "Cancel Accept"
                         : "Accept Order"}
                     </button>
+
                     <button
+                      type="button"
                       onClick={() => handleReject(order.id)}
-                      className="bg-red-50 text-red-600 px-4 py-2 text-sm rounded hover:bg-red-100"
+                      className="tailor-order-action-button tailor-order-action-danger"
                     >
                       Reject Order
                     </button>
                   </>
                 )}
 
-                {/* Inline Accept Form Modal */}
                 {acceptingOrderId === order.id && (
                   <form
-                    onSubmit={(e) => handleAcceptSubmit(e, order.id)}
-                    className="bg-blue-50 p-3 rounded border border-blue-200 mt-2 space-y-2"
+                    onSubmit={(e) =>
+                      handleAcceptSubmit(e, order.id)
+                    }
+                    className="tailor-order-accept-form"
                   >
                     <input
                       type="number"
                       step="0.1"
-                      placeholder="Total Price ($)"
+                      placeholder="Total Price (BHD)"
                       value={acceptForm.price}
                       onChange={(e) =>
-                        setAcceptForm({ ...acceptForm, price: e.target.value })
+                        setAcceptForm({
+                          ...acceptForm,
+                          price: e.target.value,
+                        })
                       }
-                      className="w-full border p-1 text-xs rounded"
                       required
                     />
+
                     <input
                       type="date"
                       value={acceptForm.final_deadline}
@@ -224,58 +294,67 @@ export default function TailorOrders() {
                           final_deadline: e.target.value,
                         })
                       }
-                      className="w-full border p-1 text-xs rounded"
                       required
                     />
-                    <button
-                      type="submit"
-                      className="w-full bg-green-600 text-white py-1 text-xs rounded hover:bg-green-700"
-                    >
+
+                    <button type="submit">
                       Send to Client
                     </button>
                   </form>
                 )}
 
-                {/* 2. CONFIRMED: Tailor can start work (In Progress) */}
                 {order.status === "confirmed" && (
                   <button
-                    onClick={() => handleProgressStep(order.id, "in-progress")}
-                    className="bg-purple-600 text-white px-4 py-2 text-sm rounded hover:bg-purple-700"
+                    type="button"
+                    onClick={() =>
+                      handleProgressStep(
+                        order.id,
+                        "in-progress"
+                      )
+                    }
+                    className="tailor-order-action-button tailor-order-action-primary"
                   >
-                    Start Work (In Progress)
+                    Start Work
                   </button>
                 )}
 
-                {/* 3. IN_PROGRESS: Mark Ready */}
                 {order.status === "in_progress" && (
                   <button
-                    onClick={() => handleProgressStep(order.id, "ready")}
-                    className="bg-teal-600 text-white px-4 py-2 text-sm rounded hover:bg-teal-700"
+                    type="button"
+                    onClick={() =>
+                      handleProgressStep(order.id, "ready")
+                    }
+                    className="tailor-order-action-button tailor-order-action-primary"
                   >
                     Mark as Ready
                   </button>
                 )}
 
-                {/* 4. READY: Send On The Way */}
                 {order.status === "ready" && (
                   <button
-                    onClick={() => handleProgressStep(order.id, "on-the-way")}
-                    className="bg-orange-600 text-white px-4 py-2 text-sm rounded hover:bg-orange-700"
+                    type="button"
+                    onClick={() =>
+                      handleProgressStep(
+                        order.id,
+                        "on-the-way"
+                      )
+                    }
+                    className="tailor-order-action-button tailor-order-action-primary"
                   >
                     Send On The Way
                   </button>
                 )}
 
                 {order.status === "delivered" && (
-                  <span className="text-xs text-center font-bold text-green-600 bg-green-50 py-2 rounded">
+                  <span className="tailor-order-completed">
                     Completed & Delivered
                   </span>
                 )}
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}
-    </div>
+    </main>
   );
 }

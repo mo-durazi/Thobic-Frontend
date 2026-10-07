@@ -1,0 +1,242 @@
+.tailor-orders-page {
+  width: min(100% - 32px, 1040px);
+  margin: 40px auto 72px;
+}
+
+.tailor-orders-title {
+  margin-bottom: 24px;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.tailor-orders-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.tailor-orders-filter select {
+  padding: 10px 14px;
+  border: 1px solid rgba(86, 26, 35, 0.2);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+  outline: none;
+}
+
+.tailor-orders-filter select:focus {
+  border-color: var(--color-primary);
+}
+
+.tailor-orders-empty {
+  padding: 48px 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.tailor-order-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.tailor-order-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.tailor-order-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tailor-order-id {
+  color: var(--color-primary);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.tailor-order-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tailor-order-info {
+  margin-bottom: 6px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.tailor-order-info strong {
+  color: var(--color-text);
+}
+
+.tailor-order-price {
+  margin-top: 8px;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tailor-order-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-background);
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.tailor-order-preview strong {
+  color: var(--color-text);
+}
+
+.tailor-order-note {
+  margin-top: 10px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+.tailor-order-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  width: 190px;
+  flex-shrink: 0;
+}
+
+.tailor-order-actions button,
+.tailor-order-actions a {
+  width: 100%;
+}
+
+.tailor-order-action-button {
+  padding: 11px 16px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.tailor-order-action-primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.tailor-order-action-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.tailor-order-action-danger {
+  border-color: var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+}
+
+.tailor-order-action-danger:hover {
+  background: var(--color-secondary);
+}
+
+.tailor-order-accept-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 16px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.tailor-order-accept-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(86, 26, 35, 0.2);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+}
+
+.tailor-order-accept-form button {
+  padding: 10px 12px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-weight: 600;
+}
+
+.tailor-order-completed {
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .tailor-orders-page {
+    margin-top: 28px;
+    margin-bottom: 48px;
+  }
+
+  .tailor-order-card {
+    flex-direction: column;
+  }
+
+  .tailor-order-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .tailor-orders-page {
+    width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .tailor-orders-filter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tailor-orders-filter select {
+    width: 100%;
+  }
+
+  .tailor-order-card {
+    padding: 20px;
+  }
+
+  .tailor-order-preview {
+    grid-template-columns: 1fr;
+  }
+}

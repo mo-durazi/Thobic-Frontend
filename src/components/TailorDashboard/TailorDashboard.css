@@ -1,0 +1,180 @@
+.tailor-dashboard {
+  width: min(100% - 32px, 1040px);
+  margin: 40px auto 72px;
+}
+
+.tailor-dashboard .section-label {
+  margin-bottom: 8px;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.tailor-dashboard h1 {
+  margin-bottom: 8px;
+  color: var(--color-primary);
+}
+
+.tailor-dashboard > p.text-gray-600 {
+  margin-bottom: 28px;
+  color: var(--color-text-muted);
+}
+
+/* Shop status */
+
+.tailor-status {
+  margin-bottom: 32px;
+  padding: 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.tailor-status-title {
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.tailor-status-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tailor-status-button {
+  padding: 10px 20px;
+  border: 1px solid rgba(86, 26, 35, 0.2);
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.tailor-status-button:hover {
+  border-color: var(--color-primary);
+  background: var(--color-secondary);
+}
+
+.tailor-status-button.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.tailor-status-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tailor-status-missing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tailor-status-text {
+  color: var(--color-text-muted);
+}
+
+.tailor-status-error {
+  margin-top: 16px;
+  color: var(--color-primary);
+  font-size: 14px;
+}
+
+/* Summary */
+
+.tailor-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.tailor-summary-grid article {
+  min-height: 130px;
+  padding: 22px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.tailor-summary-grid article span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.tailor-summary-grid article strong {
+  display: block;
+  color: var(--color-primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Actions */
+
+.tailor-dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .tailor-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tailor-dashboard {
+    margin-top: 28px;
+    margin-bottom: 48px;
+  }
+
+  .tailor-status-missing {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .tailor-dashboard {
+    width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .tailor-status {
+    padding: 20px;
+  }
+
+  .tailor-status-options {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .tailor-status-button {
+    width: 100%;
+  }
+
+  .tailor-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tailor-dashboard-actions {
+    flex-direction: column;
+  }
+
+  .tailor-dashboard-actions a {
+    width: 100%;
+  }
+}

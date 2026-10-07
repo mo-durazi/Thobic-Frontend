@@ -1,0 +1,215 @@
+.tailor-order-details {
+  width: min(100% - 32px, 1040px);
+  margin: 40px auto 72px;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.tailor-order-details > a {
+  display: inline-flex;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tailor-order-details > h1 {
+  margin-bottom: 20px;
+  color: var(--color-primary);
+}
+
+.tailor-order-details > p {
+  margin-bottom: 8px;
+  color: var(--color-text-muted);
+}
+
+.tailor-order-details > p strong {
+  color: var(--color-text);
+}
+
+/* Material delivery */
+
+.tailor-order-material-delivery {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.tailor-order-material-delivery h2 {
+  margin-bottom: 12px;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.tailor-order-material-delivery p {
+  margin-bottom: 6px;
+  color: var(--color-text-muted);
+}
+
+.tailor-order-material-delivery p:last-child {
+  margin-bottom: 0;
+}
+
+/* Error */
+
+.tailor-order-details .bg-red-100 {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary);
+}
+
+/* Information cards */
+
+.tailor-order-details section.bg-white {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.tailor-order-details section.bg-white h2 {
+  margin-bottom: 16px;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.tailor-order-details section.bg-white ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tailor-order-details section.bg-white li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(86, 26, 35, 0.08);
+  color: var(--color-text-muted);
+}
+
+.tailor-order-details section.bg-white li:last-child {
+  border-bottom: 0;
+}
+
+.tailor-order-details section.bg-white li strong {
+  color: var(--color-text);
+}
+
+/* Workflow */
+
+.tailor-order-details footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.tailor-order-details footer > div {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Buttons */
+
+.tailor-order-details footer button {
+  width: fit-content;
+  padding: 12px 22px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.tailor-order-details footer .bg-red-600 {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.tailor-order-details footer .bg-red-600:hover {
+  background: var(--color-primary-dark);
+}
+
+.tailor-order-details footer .bg-green-600,
+.tailor-order-details footer .bg-purple-600,
+.tailor-order-details footer .bg-teal-600,
+.tailor-order-details footer .bg-orange-600 {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.tailor-order-details footer button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Accept form */
+
+.tailor-order-details footer form {
+  width: min(100%, 480px);
+  padding: 24px;
+  border: 1px solid rgba(86, 26, 35, 0.1);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.tailor-order-details footer form h3 {
+  margin-bottom: 18px;
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.tailor-order-details footer form > div {
+  margin-bottom: 14px;
+}
+
+.tailor-order-details footer form label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tailor-order-details footer form input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(86, 26, 35, 0.2);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-text);
+  outline: none;
+}
+
+.tailor-order-details footer form input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(86, 26, 35, 0.08);
+}
+
+@media (max-width: 768px) {
+  .tailor-order-details {
+    margin-top: 28px;
+    margin-bottom: 48px;
+  }
+
+  .tailor-order-details section.bg-white {
+    padding: 20px;
+  }
+
+  .tailor-order-details footer button {
+    width: 100%;
+  }
+
+  .tailor-order-details footer form {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .tailor-order-details {
+    width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+}
