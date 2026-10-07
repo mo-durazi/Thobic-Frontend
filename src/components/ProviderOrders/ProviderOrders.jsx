@@ -5,6 +5,7 @@ export default function ProviderOrders() {
   const [materialOrders, setMaterialOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('all');
 
   // States for interactive modals/forms
   const [acceptingId, setAcceptingId] = useState(null);
@@ -114,6 +115,7 @@ export default function ProviderOrders() {
       <p className="text-gray-600 text-center mb-6">
         Manage requests from tailoring shops for your in-stock materials.
       </p>
+      <label className="order-filter">Filter by status <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">All statuses</option>{[...new Set(materialOrders.map((o) => o.status))].map((status) => <option key={status} value={status}>{status.replace(/_/g, ' ')}</option>)}</select></label>
 
       {materialOrders.length === 0 ? (
         <div className="text-center py-10 bg-gray-50 rounded-lg">
@@ -121,7 +123,7 @@ export default function ProviderOrders() {
         </div>
       ) : (
         <div className="space-y-4">
-          {materialOrders.map((order) => (
+          {materialOrders.filter((order) => statusFilter === 'all' || order.status === statusFilter).map((order) => (
             <div
               key={order.id}
               className="border rounded-lg p-5 bg-white shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
@@ -150,6 +152,8 @@ export default function ProviderOrders() {
                 <p className="text-sm text-gray-600">
                   Thoub Order Reference ID: #{order.thoub_order_id}
                 </p>
+                <p className="text-sm text-gray-600">Tailor: {order.tailor_name || order.tailor_display_name || (order.tailor_id ? `#${order.tailor_id}` : 'Details unavailable')}</p>
+                <p className="text-sm text-gray-600">Material: {order.material_name || order.material?.name || 'Details unavailable'}</p>
                 <p className="text-sm text-gray-600">
                   Amount Requested: {order.amount} meters | Total Price: $
                   {order.price}

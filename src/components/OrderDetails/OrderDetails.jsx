@@ -21,6 +21,7 @@ const STATUS_LABELS = {
   on_the_way: 'On the way',
   delivered: 'Delivered',
   canceled: 'Cancelled',
+  cancelled: 'Cancelled',
 };
 
 const TIMELINE_STEPS = [
@@ -33,7 +34,7 @@ const TIMELINE_STEPS = [
   'delivered',
 ];
 
-const CLOSED_STATUSES = ['tailor_rejected', 'client_rejected', 'canceled'];
+const CLOSED_STATUSES = ['tailor_rejected', 'client_rejected', 'canceled', 'cancelled'];
 
 const getErrorMessage = (err, fallback) => {
   const detail = err?.response?.data?.detail;
@@ -166,7 +167,6 @@ const OrderDetails = () => {
   const styleEntries = Object.entries(order.style ?? {});
   const measurements = order.measurements_snapshot ?? {};
 
-  //TODO: The CSS needed for status of the order to be accurate for the user.
   return (
     <main className="order-details">
       <header className="order-details-header">
@@ -231,6 +231,8 @@ const OrderDetails = () => {
         )}
       </section>
 
+      {(order.material_order || order.material_order_status) && <section className="order-info"><h2>Provider material delivery</h2><p><strong>Status:</strong> {(order.material_order?.status || order.material_order_status).replace(/_/g, ' ')}</p>{(order.material_order?.expected_delivery_date || order.expected_material_delivery_date) && <p><strong>Expected delivery:</strong> {formatDate(order.material_order?.expected_delivery_date || order.expected_material_delivery_date)}</p>}</section>}
+
       <section className="order-style">
         <h2>Style</h2>
         {styleEntries.length > 0 ? (
@@ -259,6 +261,10 @@ const OrderDetails = () => {
 
       <footer className="order-details-actions">
         {actionError && <p className="order-action-error">{actionError}</p>}
+
+        {order.status === 'pending' && (
+          <Link className="secondary-button" to={`/orders/${order.id}/edit`}>Edit order</Link>
+        )}
 
         {order.status === 'pending' && (
           <button type="button" onClick={handleDelete} disabled={actionLoading}>

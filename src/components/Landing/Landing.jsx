@@ -33,9 +33,9 @@ const Landing = () => {
             </p>
 
             <div className="hero-actions">
-              <button className="primary-button">
+              <Link to="/shops" className="primary-button">
                 Get Started
-              </button>
+              </Link>
 
               <Link to="/shops" className="secondary-button">
                 Browse Tailors
@@ -43,8 +43,10 @@ const Landing = () => {
             </div>
           </div>
 
-          <div className="hero-image-placeholder">
-            <span>Hero Image</span>
+          <div className="hero-art" aria-label="Thobic tailoring">
+            <div className="hero-art-mark">T</div>
+            <p>Made for your measurements</p>
+            <span>Crafted with care in Bahrain</span>
           </div>
 
         </div>

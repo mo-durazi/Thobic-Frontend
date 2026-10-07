@@ -11,6 +11,7 @@ export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function MyOrders() {
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">My Thoub Orders</h1>
 
+      <label className="order-filter">Filter by status <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">All statuses</option>{[...new Set(orders.map((o) => o.status))].map((status) => <option key={status} value={status}>{status.replace(/_/g, " ")}</option>)}</select></label>
       {orders.length === 0 ? (
         <div className="text-center py-10 bg-gray-50 rounded-lg">
           <p className="text-gray-500 mb-4">
@@ -91,7 +93,7 @@ export default function MyOrders() {
         </div>
       ) : (
         <div className="space-y-4">
-          {orders.map((order) => (
+          {orders.filter((order) => statusFilter === "all" || order.status === statusFilter).map((order) => (
             <div
               key={order.id}
               className="border rounded-lg p-5 bg-white shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
@@ -161,6 +163,9 @@ export default function MyOrders() {
                 </Link>
 
                 {/* 1. PENDING: Can Delete */}
+                {order.status === "pending" && (
+                  <Link to={`/orders/${order.id}/edit`} className="secondary-button">Edit</Link>
+                )}
                 {order.status === "pending" && (
                   <button
                     onClick={() => handleDelete(order.id)}
