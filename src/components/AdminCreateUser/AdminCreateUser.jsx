@@ -8,7 +8,8 @@ const AdminCreateUser = () => {
     username: '',
     email: '',
     password: '',
-    role: 'client',
+    password_confirm: '',
+    role: 'tailor',
   });
 
   const [message, setMessage] = useState('');
@@ -32,7 +33,13 @@ const AdminCreateUser = () => {
     setIsSubmitting(true);
 
     try {
-      await createUserByAdmin(formData);
+      if (formData.password !== formData.password_confirm) {
+        setError('Passwords do not match.');
+        return;
+      }
+      const accountData = { ...formData };
+      delete accountData.password_confirm;
+      await createUserByAdmin(accountData);
 
       setMessage('Account created successfully.');
 
@@ -40,7 +47,8 @@ const AdminCreateUser = () => {
         username: '',
         email: '',
         password: '',
-        role: 'client',
+        password_confirm: '',
+        role: 'tailor',
       });
     } catch (err) {
       setError(err.message);
@@ -56,7 +64,7 @@ const AdminCreateUser = () => {
           <p className="admin-create-user-label">ADMIN</p>
           <h1>Create Account</h1>
           <p>
-            Create a new client, tailor, or provider account.
+            Create a tailor or provider account.
           </p>
         </div>
 
@@ -76,6 +84,11 @@ const AdminCreateUser = () => {
               placeholder="Enter username"
               required
             />
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="password_confirm">Confirm password</label>
+            <input id="password_confirm" name="password_confirm" type="password" value={formData.password_confirm} onChange={handleChange} required />
           </div>
 
           <div className="form-field">
@@ -116,7 +129,6 @@ const AdminCreateUser = () => {
               onChange={handleChange}
               required
             >
-              <option value="client">Client</option>
               <option value="tailor">Tailor</option>
               <option value="provider">Provider</option>
             </select>

@@ -9,8 +9,8 @@ export const NAV_LINKS = {
     { to: '/my-orders', label: 'My Orders' },
     { to: '/measurements', label: 'My Measurements' },
   ],
-  // TODO: add { to: '/tailor', label: 'Dashboard' } first when the tailor dashboard is merged
   tailor: [
+    { to: '/tailor', label: 'Dashboard' },
     { to: '/tailor/orders', label: 'Orders' },
     { to: '/tailor/material-orders', label: 'Material Orders' },
     { to: '/materials/mine', label: 'My Materials' },

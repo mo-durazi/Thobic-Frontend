@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { removeToken } from '../../lib/helpers/jwt-helpers';
@@ -12,6 +12,7 @@ const NavBar = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -54,11 +55,13 @@ const NavBar = () => {
         </Link>
 
         {/* Navigation */}
-        <nav className="navbar-links">
+        <button type="button" className="navbar-menu-toggle" aria-expanded={menuOpen} aria-label="Toggle navigation" onClick={() => setMenuOpen((open) => !open)}>{menuOpen ? 'Close' : 'Menu'}</button>
+
+        <nav className={`navbar-links${menuOpen ? ' is-open' : ''}`}>
           {getNavLinks(user).map(({ to, label }) => (
-            <Link key={to} to={to} className="navbar-link">
+            <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `navbar-link${isActive ? ' active' : ''}`} onClick={() => setMenuOpen(false)}>
               {label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import { createOrder } from "../../services/orderService";
 import API from "../../services/api"; // For checking measurements
 import MaterialPicker from "../MaterialPicker/MaterialPicker";
+import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
 import "./OrderForm.css";
 
 export default function OrderForm() {
@@ -13,6 +14,7 @@ export default function OrderForm() {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const [formData, setFormData] = useState({
     tailor_id: parseInt(shopId),
@@ -54,9 +56,7 @@ export default function OrderForm() {
     if (!selectedMaterial) return;
 
     if (!measurements) {
-      alert(
-        "You must add your measurements in your profile before placing an order!",
-      );
+      setSubmitError("Add your measurements before placing an order.");
       navigate("/measurements");
       return;
     }
@@ -65,10 +65,9 @@ export default function OrderForm() {
       setSubmitting(true);
       // Calls the updated createOrder service matching backend /api/orders
       await createOrder(formData);
-      alert("Order placed successfully! Status is pending.");
       navigate("/my-orders"); // Route to client's orders dashboard
     } catch (err) {
-      alert(err || "Failed to place order. Please check inputs.");
+      setSubmitError(err?.response?.data?.detail || err?.message || "Failed to place order. Please check your inputs.");
     } finally {
       setSubmitting(false);
     }
@@ -107,6 +106,8 @@ export default function OrderForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="order-form-body">
+        {measurements && <section className="order-measurements"><h3>Your saved measurements</h3><dl>{MEASUREMENT_FIELDS.map(({ name, label }) => <div key={name}><dt>{label}</dt><dd>{measurements[name]} cm</dd></div>)}</dl></section>}
+        {submitError && <p className="form-message form-message-error" role="alert">{submitError}</p>}
         {/* Material Selection */}
         <div className="order-form-section">
           <label className="order-form-section-label">

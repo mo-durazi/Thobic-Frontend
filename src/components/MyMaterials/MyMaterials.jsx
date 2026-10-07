@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getMyMaterials } from '../../services/materialService';
+import { getMyMaterials, deleteMaterial, updateMaterial } from '../../services/materialService';
+import { useNavigate } from 'react-router';
 
 import './MyMaterials.css';
 
@@ -7,6 +8,7 @@ const MyMaterials = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadMaterials = async () => {
@@ -59,6 +61,7 @@ const MyMaterials = () => {
         <button
           type="button"
           className="add-material-button"
+          onClick={() => navigate('/materials/new')}
         >
           Add Material
         </button>
@@ -134,6 +137,7 @@ const MyMaterials = () => {
                       <button
                         type="button"
                         className="material-action-button"
+                        onClick={() => navigate(`/materials/${material.id}/edit`)}
                       >
                         Edit
                       </button>
@@ -141,9 +145,18 @@ const MyMaterials = () => {
                       <button
                         type="button"
                         className="material-action-button delete"
+                        onClick={async () => {
+                          if (!window.confirm(`Delete ${material.name}?`)) return;
+                          try { await deleteMaterial(material.id); setMaterials((items) => items.filter((item) => item.id !== material.id)); }
+                          catch (err) { setError(err.message); }
+                        }}
                       >
                         Delete
                       </button>
+                      <button type="button" className="material-action-button" onClick={async () => {
+                        try { await updateMaterial(material.id, { ...material, is_available: !material.is_available }); setMaterials((items) => items.map((item) => item.id === material.id ? { ...item, is_available: !item.is_available } : item)); }
+                        catch (err) { setError(err.message); }
+                      }}>{material.is_available ? 'Mark unavailable' : 'Mark available'}</button>
                     </div>
                   </td>
                 </tr>

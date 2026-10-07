@@ -15,6 +15,11 @@ const SignUpForm = () => {
     email: '',
     password: '',
     passwordConf: '',
+    display_name: '',
+    road_no: '',
+    block_no: '',
+    building_no: '',
+    phone_number: '',
   });
   const { user: currentUser, setUser } = useContext(UserContext);
 
@@ -30,15 +35,18 @@ const SignUpForm = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
 
-    const payload = { username, email, password };
-    const user = await authService.signUp(payload)
-
-    setUser(user); // this line will print the form data to the console
-    navigate(getRoleHome(user.role), { replace: true })
+    if (password !== passwordConf) { setMessage('Passwords do not match.'); return; }
+    try {
+      const payload = { ...formData };
+      delete payload.passwordConf;
+      const user = await authService.signUp({ ...payload, road_no: Number(payload.road_no), block_no: Number(payload.block_no), building_no: Number(payload.building_no) });
+      setUser(user);
+      navigate(getRoleHome(user.role), { replace: true });
+    } catch (err) { setMessage(err.message || 'Unable to create your account.'); }
   };
 
   const isFormInvalid = () => {
-    return !(username && email && password && password === passwordConf);
+    return !(username && email && password && password === passwordConf && formData.display_name && formData.road_no && formData.block_no && formData.building_no && formData.phone_number);
   };
 
   return (
@@ -46,6 +54,7 @@ const SignUpForm = () => {
       <h1>Sign Up</h1>
       <p>{message}</p>
       <form onSubmit={handleSubmit}>
+        {['display_name', 'road_no', 'block_no', 'building_no', 'phone_number'].map((field) => <div key={field}><label htmlFor={field}>{({ display_name: 'Display name', road_no: 'Road number', block_no: 'Block number', building_no: 'Building number', phone_number: 'Phone number' })[field]}:</label><input id={field} name={field} type={field.includes('_no') ? 'number' : 'text'} value={formData[field]} onChange={handleChange} required /></div>)}
         {/* Username Field */}
         <div>
           <label htmlFor='username'>Username:</label>
