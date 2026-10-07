@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import MaterialPicker from '../MaterialPicker/MaterialPicker';
+import OrderStyleSelector from '../OrderStyleSelector/OrderStyleSelector';
 import { editOrder, getOrderById } from '../../services/orderService';
 import { getMaterial } from '../../services/materialService';
+import { DEFAULT_STYLE, STYLE_FIELDS, STYLE_OPTIONS } from '../../lib/styleOptions';
 
 const INITIAL_FORM = {
   material_amount: '1',
-  style: { collar: 'Standard', cuff: 'Normal', pocket: 'Yes' },
+  style: { ...DEFAULT_STYLE },
   requested_deadline: '',
   note: '',
 };
@@ -63,11 +65,15 @@ export default function OrderEdit() {
         setInitialMaterialId(currentOrder.material_id);
         setFormData({
           material_amount: String(currentOrder.material_amount ?? 1),
-          style: {
-            collar: currentOrder.style?.collar ?? 'Standard',
-            cuff: currentOrder.style?.cuff ?? 'Normal',
-            pocket: currentOrder.style?.pocket ?? 'Yes',
-          },
+          style: Object.fromEntries(STYLE_FIELDS.map(({ name }) => {
+            const savedValue = currentOrder.style?.[name];
+            return [
+              name,
+              STYLE_OPTIONS[name].includes(savedValue)
+                ? savedValue
+                : DEFAULT_STYLE[name],
+            ];
+          })),
           requested_deadline: currentOrder.requested_deadline || '',
           note: currentOrder.note || '',
         });
@@ -157,30 +163,14 @@ export default function OrderEdit() {
           <input id="order-edit-deadline" className="order-edit-input" type="date" min={getLocalDate()} value={formData.requested_deadline} onChange={(event) => setFormData((current) => ({ ...current, requested_deadline: event.target.value }))} />
         </div>
 
-        <div className="order-edit-style-grid">
-          <div className="order-edit-field">
-            <label htmlFor="order-edit-collar">Collar style</label>
-            <select id="order-edit-collar" className="order-edit-input" value={formData.style.collar} onChange={(event) => setFormData((current) => ({ ...current, style: { ...current.style, collar: event.target.value } }))}>
-              <option value="Standard">Standard</option>
-              <option value="Round">Round</option>
-              <option value="Collar">Closed</option>
-            </select>
-          </div>
-          <div className="order-edit-field">
-            <label htmlFor="order-edit-cuff">Cuff style</label>
-            <select id="order-edit-cuff" className="order-edit-input" value={formData.style.cuff} onChange={(event) => setFormData((current) => ({ ...current, style: { ...current.style, cuff: event.target.value } }))}>
-              <option value="Normal">Normal</option>
-              <option value="Button">Button</option>
-            </select>
-          </div>
-          <div className="order-edit-field">
-            <label htmlFor="order-edit-pocket">Pocket</label>
-            <select id="order-edit-pocket" className="order-edit-input" value={formData.style.pocket} onChange={(event) => setFormData((current) => ({ ...current, style: { ...current.style, pocket: event.target.value } }))}>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </div>
-        </div>
+        <OrderStyleSelector
+          className="order-edit-section"
+          value={formData.style}
+          onChange={(name, option) => setFormData((current) => ({
+            ...current,
+            style: { ...current.style, [name]: option },
+          }))}
+        />
 
         <div className="order-edit-field">
           <label htmlFor="order-edit-note">Note</label>

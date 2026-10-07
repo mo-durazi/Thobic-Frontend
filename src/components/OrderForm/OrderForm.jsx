@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router";
 import { createOrder } from "../../services/orderService";
 import API from "../../services/api"; // For checking measurements
 import MaterialPicker from "../MaterialPicker/MaterialPicker";
+import OrderStyleSelector from "../OrderStyleSelector/OrderStyleSelector";
 import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
+import { DEFAULT_STYLE } from "../../lib/styleOptions";
 import "./OrderForm.css";
 
 export default function OrderForm() {
@@ -20,7 +22,7 @@ export default function OrderForm() {
     tailor_id: parseInt(shopId),
     material_id: "",
     material_amount: 3.0, // Default typical meters for a thawb
-    style: { collar: "Standard", cuff: "Normal", pocket: "Yes" },
+    style: { ...DEFAULT_STYLE },
     requested_deadline: "",
     note: "",
   });
@@ -166,46 +168,16 @@ export default function OrderForm() {
           />
         </div>
 
-        {/* Style customizations (Optional/Basic dictionary) */}
-        <div className="order-form-section order-form-style-grid">
-          <div className="order-form-field">
-            <label className="order-form-label">
-              Collar Style
-            </label>
-            <select
-              className="order-form-input"
-              value={formData.style.collar}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  style: { ...formData.style, collar: e.target.value },
-                })
-              }
-            >
-              <option value="Standard">Standard</option>
-              <option value="Collar">Collar / Closed</option>
-              <option value="Round">Round</option>
-            </select>
-          </div>
-          <div className="order-form-field">
-            <label className="order-form-label">
-              Cuff Style
-            </label>
-            <select
-              className="order-form-input"
-              value={formData.style.cuff}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  style: { ...formData.style, cuff: e.target.value },
-                })
-              }
-            >
-              <option value="Normal">Normal</option>
-              <option value="Button">Button Cuff</option>
-            </select>
-          </div>
-        </div>
+        <OrderStyleSelector
+          className="order-form-section"
+          value={formData.style}
+          onChange={(name, option) =>
+            setFormData((current) => ({
+              ...current,
+              style: { ...current.style, [name]: option },
+            }))
+          }
+        />
 
         {/* Notes */}
         <div className="order-form-section order-form-field">

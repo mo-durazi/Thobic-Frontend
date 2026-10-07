@@ -194,14 +194,6 @@ textarea.order-form-input {
   resize: vertical;
 }
 
-/* ------------------------ Style Options ------------------------ */
-
-.order-form-style-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
 /* ------------------------ Actions ------------------------ */
 
 .order-form-actions {
@@ -262,10 +254,6 @@ textarea.order-form-input {
   .order-form-section,
   .order-form .order-measurements {
     padding: 18px;
-  }
-
-  .order-form-style-grid {
-    grid-template-columns: 1fr;
   }
 
   .order-form-notice-row {
