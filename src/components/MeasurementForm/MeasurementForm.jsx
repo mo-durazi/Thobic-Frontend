@@ -1,45 +1,31 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router';
+import { Link, Navigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
 import {
-  createMeasurements,
+  deleteMeasurements,
   getMyMeasurements,
-  updateMeasurements,
 } from '../../services/measurementService';
 
-const initialState = Object.fromEntries(
-  MEASUREMENT_FIELDS.map((field) => [field.name, ''])
-);
+// import './MyMeasurements.css';
 
-const MeasurementForm = ({ isEdit = false }) => {
+const MyMeasurements = () => {
   const { user } = useContext(UserContext);
-  const [formData, setFormData] = useState(initialState);
+  const [measurements, setMeasurements] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(isEdit);
-  const navigate = useNavigate();
+  const [deleteError, setDeleteError] = useState('');
 
   const isClient = user?.role === 'client';
 
   useEffect(() => {
-    if (!isEdit || !isClient) return;
+    if (!isClient) return;
 
     const loadMeasurements = async () => {
       try {
         const data = await getMyMeasurements();
-
-        // Nothing to edit yet
-        if (!data) {
-          navigate('/measurements');
-          return;
-        }
-
-        setFormData(
-          Object.fromEntries(
-            MEASUREMENT_FIELDS.map(({ name }) => [name, String(data[name] ?? '')])
-          )
-        );
+        setMeasurements(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -48,80 +34,98 @@ const MeasurementForm = ({ isEdit = false }) => {
     };
 
     loadMeasurements();
-  }, [isEdit, isClient, navigate]);
+  }, [isClient]);
 
-  if (!user) return <Navigate to="/sign-in" />;
+  const handleDelete = async () => {
+    setDeleteError('');
+
+    try {
+      await deleteMeasurements();
+      setMeasurements(null);
+    } catch (err) {
+      setDeleteError(err.message);
+    }
+  };
+
+  if (!user) {
+    return <Navigate to="/sign-in" />;
+  }
 
   if (!isClient) {
     return (
-      <main>
-        <p>Only clients can manage measurements.</p>
+      <main className="measurements-page">
+        <div className="measurements-empty">
+          <p>Only clients can manage measurements.</p>
+        </div>
       </main>
     );
   }
 
-  const handleChange = (evt) => {
-    setFormData({ ...formData, [evt.target.name]: evt.target.value });
-  };
-
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
-    setError('');
-
-    const values = Object.fromEntries(
-      Object.entries(formData).map(([name, value]) => [name, parseFloat(value)])
-    );
-
-    try {
-      if (isEdit) {
-        await updateMeasurements(values);
-      } else {
-        await createMeasurements(values);
-      }
-      navigate('/measurements');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   if (loading) {
     return (
-      <main>
-        <p>Loading...</p>
+      <main className="measurements-page">
+        <p className="measurements-status">Loading measurements...</p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="measurements-page">
+        <div className="measurements-empty">
+          <p>{error}</p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main>
-      <h1>{isEdit ? 'Edit My Measurements' : 'Add Measurements'}</h1>
+    <main className="measurements-page">
+      <h1>My Measurements</h1>
 
-      {error && <p>{error}</p>}
+      {deleteError && (
+        <p className="measurements-message" role="alert">
+          {deleteError}
+        </p>
+      )}
 
-      <form onSubmit={handleSubmit}>
-        {MEASUREMENT_FIELDS.map(({ name, label }) => (
-          <div key={name}>
-            <label htmlFor={name}>{label}</label>
-            <input
-              type="number"
-              id={name}
-              name={name}
-              value={formData[name]}
-              onChange={handleChange}
-              min="0"
-              step="0.1"
-              required
-            />
+      {measurements ? (
+        <section className="measurements-card">
+          <div className="measurements-grid">
+            {MEASUREMENT_FIELDS.map(({ name, label }) => (
+              <div className="measurement-item" key={name}>
+                <span className="measurement-item-label">{label}</span>
+                <span className="measurement-item-value">
+                  {measurements[name]} cm
+                </span>
+              </div>
+            ))}
           </div>
-        ))}
 
-        <button type="submit">
-          {isEdit ? 'Save Changes' : 'Save Measurements'}
-        </button>
-        <Link to="/measurements">Cancel</Link>
-      </form>
+          <div className="measurements-actions">
+            <Link to="/measurements/edit">
+              Edit My Measurements
+            </Link>
+
+            <button type="button" onClick={handleDelete}>
+              Delete My Measurements
+            </button>
+          </div>
+        </section>
+      ) : (
+        <section className="measurements-empty">
+          <p>You haven't added your measurements yet.</p>
+
+          <Link
+            className="primary-button"
+            to="/measurements/new"
+          >
+            Add Measurements
+          </Link>
+        </section>
+      )}
     </main>
   );
 };
 
-export default MeasurementForm;
+export default MyMeasurements;

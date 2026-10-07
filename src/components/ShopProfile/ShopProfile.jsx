@@ -4,7 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { UserContext } from '../../contexts/UserContext';
 import { getShopProfile } from '../../services/shopService';
 
-// import './ShopProfile.css';
+import './ShopProfile.css';
 
 const STATUS_LABELS = {
   open: 'Open',
