@@ -20,6 +20,7 @@ import ShopProfile from "./components/ShopProfile/ShopProfile";
 import ShopList from "./components/ShopList/ShopList";
 import OrderForm from "./components/OrderForm/OrderForm";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
+import Forbidden from "./components/Forbidden/Forbidden";
 
 
 // Context
@@ -115,6 +116,12 @@ const App = () => {
           path="/shops/:shopId/order"
           element={<OrderForm />}
         />
+
+        <Route
+          path="/forbidden"
+          element={<Forbidden />}
+        />
+
       </Routes>
     </>
   );
