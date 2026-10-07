@@ -21,6 +21,7 @@ import ShopList from "./components/ShopList/ShopList";
 import OrderForm from "./components/OrderForm/OrderForm";
 import OrderDetails from "./components/OrderDetails/OrderDetails";
 import Forbidden from "./components/Forbidden/Forbidden";
+import NotFound from "./components/NotFound/NotFound";
 
 
 // Context
@@ -122,6 +123,10 @@ const App = () => {
           element={<Forbidden />}
         />
 
+        <Route
+          path="/not-found"
+          element={<NotFound />}
+        />
       </Routes>
     </>
   );
