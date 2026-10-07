@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../../services/api";
 
 export default function TailorMaterialOrders() {
   const [materialOrders, setMaterialOrders] = useState([]);
@@ -13,14 +13,8 @@ export default function TailorMaterialOrders() {
   const fetchTailorMaterialOrders = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       // Fetch material orders related to this tailor's shop items
-      const response = await axios.get(
-        "http://localhost:8000/api/material-orders",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await API.get("/material-orders");
       setMaterialOrders(response.data);
       setError(null);
     } catch (err) {
@@ -32,15 +26,8 @@ export default function TailorMaterialOrders() {
 
   const handleMarkDelivered = async (materialOrderId) => {
     try {
-      const token = localStorage.getItem("token");
       // Calls your backend route: PUT /api/material-orders/{id}/delivered
-      await axios.put(
-        `http://localhost:8000/api/material-orders/${materialOrderId}/delivered`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await API.put(`/material-orders/${materialOrderId}/delivered`, {});
 
       alert(
         "Material marked as delivered! You can now start work on the Thoub order.",

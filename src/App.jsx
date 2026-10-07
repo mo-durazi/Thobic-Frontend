@@ -180,6 +180,8 @@ const App = () => {
           path="/not-found"
           element={<NotFound />}
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
