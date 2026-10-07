@@ -125,8 +125,8 @@ export default function ProviderOrders() {
                 <p className="text-sm text-gray-600">
                   Thoub Order Reference ID: #{order.thoub_order_id}
                 </p>
-                <p className="text-sm text-gray-600">Tailor: {order.tailor_name || order.tailor_display_name || (order.tailor_id ? `#${order.tailor_id}` : 'Details unavailable')}</p>
-                <p className="text-sm text-gray-600">Material: {order.material_name || order.material?.name || 'Details unavailable'}</p>
+                <p className="text-sm text-gray-600">Tailor: {order.tailor_name || '—'}</p>
+                <p className="text-sm text-gray-600">Material: {order.material_name || '—'}</p>
                 <p className="text-sm text-gray-600">
                   Amount Requested: {order.amount} meters | Total Price: $
                   {order.price}

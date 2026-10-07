@@ -24,6 +24,14 @@ const formatDate = (value) =>
 const formatStyleKey = (key) =>
   key.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 
+const MATERIAL_ORDER_STATUS_LABELS = {
+  pending: "Waiting for the provider",
+  accepted: "Accepted by the provider",
+  on_the_way: "On the way to the tailor",
+  delivered: "Delivered to the tailor",
+  rejected: "Rejected by the provider",
+};
+
 const TailorOrderDetails = () => {
   const { user } = useContext(UserContext);
   const { orderId } = useParams();
@@ -143,6 +151,25 @@ const TailorOrderDetails = () => {
         <p>
           <strong>Client Note:</strong> {order.note}
         </p>
+      )}
+
+      {order.material_order_status && (
+        <section className="tailor-order-material-delivery">
+          <h2>Provider material delivery</h2>
+          <p>
+            <strong>Status:</strong>{" "}
+            {MATERIAL_ORDER_STATUS_LABELS[order.material_order_status] ?? order.material_order_status}
+          </p>
+          {order.expected_material_delivery_date && (
+            <p>
+              <strong>Expected delivery:</strong>{" "}
+              {formatDate(order.expected_material_delivery_date)}
+            </p>
+          )}
+          {order.material_order_status !== "delivered" && (
+            <p>You can start work once the material is delivered.</p>
+          )}
+        </section>
       )}
 
       {actionError && (
