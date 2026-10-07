@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../../services/api";
 
 export default function ProviderOrders() {
   const [materialOrders, setMaterialOrders] = useState([]);
@@ -21,13 +21,7 @@ export default function ProviderOrders() {
   const fetchProviderOrders = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:8000/api/material-orders",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const response = await API.get("/material-orders");
       setMaterialOrders(response.data);
       setError(null);
     } catch (err) {
@@ -40,16 +34,9 @@ export default function ProviderOrders() {
   const handleAccept = async (e, orderId) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/api/material-orders/${orderId}/accept`,
-        {
-          expected_delivery_date: expectedDate,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await API.put(`/material-orders/${orderId}/accept`, {
+        expected_delivery_date: expectedDate,
+      });
 
       alert("Material order accepted successfully!");
       setAcceptingId(null);
@@ -63,16 +50,9 @@ export default function ProviderOrders() {
   const handleReject = async (e, orderId) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/api/material-orders/${orderId}/reject`,
-        {
-          rejection_reason: rejectionReason,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await API.put(`/material-orders/${orderId}/reject`, {
+        rejection_reason: rejectionReason,
+      });
 
       alert(
         "Material order rejected. The corresponding Thoub order has been cancelled.",
@@ -87,14 +67,7 @@ export default function ProviderOrders() {
 
   const handleMarkOnTheWay = async (orderId) => {
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:8000/api/material-orders/${orderId}/on-the-way`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await API.put(`/material-orders/${orderId}/on-the-way`, {});
 
       alert('Material order marked as "On the Way"!');
       fetchProviderOrders();

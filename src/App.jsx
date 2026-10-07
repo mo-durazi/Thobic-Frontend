@@ -185,6 +185,7 @@ const App = () => {
         <Route path="/forbidden" element={<Forbidden />} />
 
         <Route path="/not-found" element={<NotFound />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

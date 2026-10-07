@@ -3,22 +3,32 @@ import { createUserByAdmin } from '../../services/userService';
 
 import './AdminCreateUser.css';
 
-const AdminCreateUser = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    password_confirm: '',
-    role: 'tailor',
-  });
+const initialFormData = {
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  role: 'tailor',
+};
 
-  const [message, setMessage] = useState('');
+const ROLE_LABELS = {
+  tailor: 'Tailor',
+  provider: 'Provider',
+};
+
+const AdminCreateUser = () => {
+  const [formData, setFormData] = useState(initialFormData);
+
+  // The account created by the last submit, for the success message
+  const [lastCreated, setLastCreated] = useState(null);
+  const [createdAccounts, setCreatedAccounts] = useState([]);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
+    setError('');
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -28,28 +38,36 @@ const AdminCreateUser = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setMessage('');
+    setLastCreated(null);
     setError('');
+
+    const { username, email, password, confirmPassword, role } = formData;
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords don't match.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      if (formData.password !== formData.password_confirm) {
-        setError('Passwords do not match.');
-        return;
-      }
-      const accountData = { ...formData };
-      delete accountData.password_confirm;
-      await createUserByAdmin(accountData);
+      const created = await createUserByAdmin({ username, email, password, role });
+      const account = {
+        id: created.id,
+        username: created.username,
+        email: created.email,
+        role: created.role,
+      };
 
-      setMessage('Account created successfully.');
+      setLastCreated(account);
+      setCreatedAccounts((prev) => [account, ...prev]);
 
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        password_confirm: '',
-        role: 'tailor',
-      });
+      setFormData(initialFormData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -64,7 +82,7 @@ const AdminCreateUser = () => {
           <p className="admin-create-user-label">ADMIN</p>
           <h1>Create Account</h1>
           <p>
-            Create a tailor or provider account.
+            Create a tailor shop or material provider account.
           </p>
         </div>
 
@@ -84,11 +102,6 @@ const AdminCreateUser = () => {
               placeholder="Enter username"
               required
             />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="password_confirm">Confirm password</label>
-            <input id="password_confirm" name="password_confirm" type="password" value={formData.password_confirm} onChange={handleChange} required />
           </div>
 
           <div className="form-field">
@@ -115,6 +128,23 @@ const AdminCreateUser = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter password"
+              minLength={8}
+              required
+            />
+
+            <p className="form-hint">At least 8 characters.</p>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="confirmPassword">Confirm password</label>
+
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Re-enter password"
               required
             />
           </div>
@@ -129,14 +159,26 @@ const AdminCreateUser = () => {
               onChange={handleChange}
               required
             >
-              <option value="tailor">Tailor</option>
-              <option value="provider">Provider</option>
+              <option value="tailor">Tailor shop</option>
+              <option value="provider">Material provider</option>
             </select>
           </div>
 
-          {message && (
+          {lastCreated && (
             <p className="form-message form-message-success">
-              {message}
+              {lastCreated.role === 'tailor' ? (
+                <>
+                  Tailor shop account <strong>{lastCreated.username}</strong>{' '}
+                  created. They'll complete their shop profile the first time
+                  they sign in.
+                </>
+              ) : (
+                <>
+                  Provider account <strong>{lastCreated.username}</strong>{' '}
+                  created. They'll complete their profile the first time they
+                  sign in.
+                </>
+              )}
             </p>
           )}
 
@@ -154,6 +196,35 @@ const AdminCreateUser = () => {
             {isSubmitting ? 'Creating...' : 'Create Account'}
           </button>
         </form>
+
+        {createdAccounts.length > 0 && (
+          <section className="admin-created">
+            <h2 className="admin-created-title">Recently Created Accounts</h2>
+            {/* TODO: Create a view all page for admins to see all accounts in system. */}
+            <p className="admin-created-note">
+              This list clears when you leave the page.
+            </p>
+
+            <ul className="admin-created-list">
+              {createdAccounts.map((account) => (
+                <li key={account.id} className="admin-created-item">
+                  <div className="admin-created-info">
+                    <span className="admin-created-username">
+                      {account.username}
+                    </span>
+                    <span className="admin-created-email">
+                      {account.email}
+                    </span>
+                  </div>
+
+                  <span className="admin-created-badge">
+                    {ROLE_LABELS[account.role] ?? account.role}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );
