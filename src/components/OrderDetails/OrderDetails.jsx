@@ -166,6 +166,7 @@ const OrderDetails = () => {
   const styleEntries = Object.entries(order.style ?? {});
   const measurements = order.measurements_snapshot ?? {};
 
+  //TODO: The CSS needed for status of the order to be accurate for the user.
   return (
     <main className="order-details">
       <header className="order-details-header">
