@@ -25,6 +25,7 @@ import OrderDetails from "./components/OrderDetails/OrderDetails";
 import Forbidden from "./components/Forbidden/Forbidden";
 import NotFound from "./components/NotFound/NotFound";
 import RoleRoute from "./components/RoleRoute/RoleRoute";
+import ProfileForm from "./components/ProfileForm/ProfileForm";
 
 // Context
 import { UserContext } from "./contexts/UserContext";
@@ -185,6 +186,15 @@ const App = () => {
         <Route path="/forbidden" element={<Forbidden />} />
 
         <Route path="/not-found" element={<NotFound />} />
+
+        <Route
+          path="/profile"
+          element={
+            <RoleRoute roles={["tailor", "provider"]}>
+              <ProfileForm />
+            </RoleRoute>
+          }
+        />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 
 import { signIn } from '../../services/authService';
+import { getMyProfile } from '../../services/profileService';
 
 import { UserContext } from '../../contexts/UserContext';
 import { getRoleHome } from '../../lib/roleHome';
@@ -10,12 +11,14 @@ const SignInForm = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
   const [message, setMessage] = useState('');
+  const [signingIn, setSigningIn] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
 
-  if (user) return <Navigate to={getRoleHome(user.role)} replace />;
+  // Skip while a sign-in is in progress, so handleSubmit picks the destination
+  if (user && !signingIn) return <Navigate to={getRoleHome(user.role)} replace />;
 
   const handleChange = (evt) => {
     setMessage('');
@@ -24,12 +27,27 @@ const SignInForm = () => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    setSigningIn(true);
+
     try {
       const signedInUser = await signIn(formData);
+      const { role } = signedInUser;
+      let destination = getRoleHome(role);
+
+      if (role === 'tailor' || role === 'provider') {
+        try {
+          const profile = await getMyProfile();
+          if (!profile) destination = '/profile';
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       setUser(signedInUser);
-      navigate(getRoleHome(signedInUser.role), { replace: true });
+      navigate(destination, { replace: true });
     } catch (err) {
       setMessage(err.message);
+      setSigningIn(false);
     }
   };
 
