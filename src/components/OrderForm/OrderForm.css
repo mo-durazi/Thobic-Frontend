@@ -1,0 +1,214 @@
+/* ------------------------ Order Form Page ------------------------ */
+
+.order-form {
+  --order-form-error: #9B2C2C;
+
+  padding: 40px 0;
+}
+
+.order-form.container {
+  max-width: 880px;
+}
+
+.order-form-title {
+  margin-bottom: 24px;
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 600;
+  text-align: center;
+}
+
+.order-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+/* ------------------------ Cards ------------------------ */
+
+.order-form-section {
+  padding: 24px;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+
+/* ------------------------ Measurements notice ------------------------ */
+
+.order-form-notice {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+}
+
+.order-form-notice-success {
+  border-left: 4px solid var(--color-primary);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.order-form-notice-missing {
+  background-color: color-mix(in srgb, var(--order-form-error) 8%, var(--color-white));
+  color: var(--order-form-error);
+}
+
+.order-form-notice-text {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.order-form-notice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.order-form-notice-button {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+
+/* ------------------------ Selected material summary ------------------------ */
+
+.order-form-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 4px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.order-form-summary-material {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.order-form-summary-material strong {
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+.order-form-summary-cost {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+
+/* ------------------------ Fields ------------------------ */
+
+.order-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.order-form-label {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.order-form-section-label {
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.order-form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  color: var(--color-text);
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-form-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-secondary);
+}
+
+textarea.order-form-input {
+  resize: vertical;
+}
+
+.order-form-style-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+
+/* ------------------------ Actions ------------------------ */
+
+.order-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.order-form-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.order-form-submit:disabled:hover {
+  background-color: var(--color-primary);
+}
+
+
+/* ------------------------ Status messages ------------------------ */
+
+.order-form-status {
+  padding: 40px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.order-form-error {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background-color: color-mix(in srgb, var(--order-form-error) 8%, var(--color-white));
+  color: var(--order-form-error);
+  text-align: center;
+}
+
+
+/* ------------------------ Responsive ------------------------ */
+
+@media (max-width: 600px) {
+  .order-form {
+    padding: 24px 0;
+  }
+
+  .order-form-section {
+    padding: 18px;
+  }
+
+  .order-form-style-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .order-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .order-form-actions > * {
+    width: 100%;
+  }
+}

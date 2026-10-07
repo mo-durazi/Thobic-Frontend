@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import { getShopProfile } from "../../services/shopService";
 import { createOrder } from "../../services/orderService";
 import API from "../../services/api"; // For checking measurements
-//import "./OrderForm.css";
+import MaterialPicker from "../MaterialPicker/MaterialPicker";
+import "./OrderForm.css";
 
 export default function OrderForm() {
   const { shopId } = useParams();
   const navigate = useNavigate();
 
   const [measurements, setMeasurements] = useState(null);
-  const [materials, setMaterials] = useState([]);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
 
-  // Form payload matching ThoubOrderCreateSchema
   const [formData, setFormData] = useState({
     tailor_id: parseInt(shopId),
     material_id: "",
@@ -26,33 +24,34 @@ export default function OrderForm() {
   });
 
   useEffect(() => {
-    loadData();
-  }, [shopId]);
-
-  const loadData = async () => {
-    try {
+    const loadData = async () => {
       setLoading(true);
-      // 1. Check if client has saved measurements
       try {
         const measRes = await API.get("/measurements/me");
         setMeasurements(measRes.data);
-      } catch (err) {
-        setMeasurements(null); // Not found or error
+      } catch {
+        setMeasurements(null);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      // 2. Fetch shop details and its available in-stock materials
-      const shopData = await getShopProfile(shopId);
-      setMaterials(shopData.materials || []);
-      setError(null);
-    } catch (err) {
-      setError("Failed to load shop details or materials.");
-    } finally {
-      setLoading(false);
-    }
+    loadData();
+  }, []);
+
+  const handleSelectMaterial = (material) => {
+    setSelectedMaterial(material);
+    setFormData({ ...formData, material_id: material.id });
   };
+
+  const estimatedCost =
+    selectedMaterial &&
+    (Number(selectedMaterial.price) * (formData.material_amount || 0)).toFixed(3);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!selectedMaterial) return;
 
     if (!measurements) {
       alert(
@@ -76,31 +75,30 @@ export default function OrderForm() {
   };
 
   if (loading)
-    return <p className="text-center mt-10">Loading order form...</p>;
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+    return <p className="order-form-status">Loading order form...</p>;
 
   return (
-    <div className="order-form-container max-w-xl mx-auto p-6 bg-white shadow-md rounded-lg mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">Place Thoub Order</h2>
+    <div className="order-form container">
+      <h2 className="order-form-title">Place Thoub Order</h2>
 
       {/* Measurement Status Alert Box */}
       <div
-        className={`p-4 mb-6 rounded ${measurements ? "bg-green-50 text-green-800" : "bg-red-50 text-red-800"}`}
+        className={`order-form-notice ${measurements ? "order-form-notice-success" : "order-form-notice-missing"}`}
       >
         {measurements ? (
-          <p className="text-sm font-medium">
+          <p className="order-form-notice-text">
             ✓ Your saved measurements are ready and will be snapshotted to this
             order.
           </p>
         ) : (
-          <div className="flex justify-between items-center">
-            <p className="text-sm font-medium">
+          <div className="order-form-notice-row">
+            <p className="order-form-notice-text">
               ⚠ No measurements profile found.
             </p>
             <button
               type="button"
               onClick={() => navigate("/measurements")}
-              className="bg-red-600 text-white px-3 py-1 text-xs rounded hover:bg-red-700"
+              className="secondary-button order-form-notice-button"
             >
               Add Measurements
             </button>
@@ -108,47 +106,38 @@ export default function OrderForm() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="order-form-body">
         {/* Material Selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="order-form-section">
+          <label className="order-form-section-label">
             Select Material *
           </label>
-          <select
-            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500"
-            value={formData.material_id}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                material_id: parseInt(e.target.value),
-              })
-            }
-            required
-          >
-            <option value="">-- Choose an available material --</option>
-            {materials.map((mat) => (
-              <option key={mat.id} value={mat.id}>
-                {mat.name} ({mat.colour}) — ${mat.price}/meter
-              </option>
-            ))}
-          </select>
-          {materials.length === 0 && (
-            <p className="text-xs text-amber-600 mt-1">
-              Note: This shop currently has no active materials listed.
-            </p>
+          {selectedMaterial && (
+            <div className="order-form-summary">
+              <p className="order-form-summary-material">
+                <strong>{selectedMaterial.name}</strong> —{" "}
+                {selectedMaterial.price} BHD / metre
+              </p>
+              <p className="order-form-summary-cost">Estimated material cost: {estimatedCost} BHD</p>
+            </div>
           )}
+          <MaterialPicker
+            shopId={shopId}
+            selectedMaterialId={selectedMaterial?.id}
+            onSelect={handleSelectMaterial}
+          />
         </div>
 
         {/* Material Amount */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="order-form-section order-form-field">
+          <label className="order-form-label">
             Material Amount (Meters) *
           </label>
           <input
             type="number"
             step="0.1"
             min="0.5"
-            className="w-full border p-2 rounded"
+            className="order-form-input"
             value={formData.material_amount}
             onChange={(e) =>
               setFormData({
@@ -161,13 +150,13 @@ export default function OrderForm() {
         </div>
 
         {/* Requested Deadline */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="order-form-section order-form-field">
+          <label className="order-form-label">
             Requested Deadline *
           </label>
           <input
             type="date"
-            className="w-full border p-2 rounded"
+            className="order-form-input"
             value={formData.requested_deadline}
             onChange={(e) =>
               setFormData({ ...formData, requested_deadline: e.target.value })
@@ -177,13 +166,13 @@ export default function OrderForm() {
         </div>
 
         {/* Style customizations (Optional/Basic dictionary) */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+        <div className="order-form-section order-form-style-grid">
+          <div className="order-form-field">
+            <label className="order-form-label">
               Collar Style
             </label>
             <select
-              className="w-full border p-2 rounded text-sm"
+              className="order-form-input"
               value={formData.style.collar}
               onChange={(e) =>
                 setFormData({
@@ -197,12 +186,12 @@ export default function OrderForm() {
               <option value="Round">Round</option>
             </select>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
+          <div className="order-form-field">
+            <label className="order-form-label">
               Cuff Style
             </label>
             <select
-              className="w-full border p-2 rounded text-sm"
+              className="order-form-input"
               value={formData.style.cuff}
               onChange={(e) =>
                 setFormData({
@@ -218,12 +207,12 @@ export default function OrderForm() {
         </div>
 
         {/* Notes */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="order-form-section order-form-field">
+          <label className="order-form-label">
             Notes for Tailor
           </label>
           <textarea
-            className="w-full border p-2 rounded"
+            className="order-form-input"
             rows="3"
             value={formData.note}
             onChange={(e) => setFormData({ ...formData, note: e.target.value })}
@@ -232,22 +221,18 @@ export default function OrderForm() {
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-4 pt-4">
+        <div className="order-form-actions">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="w-1/2 bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300 transition"
+            className="secondary-button"
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={submitting || !measurements}
-            className={`w-1/2 py-2 rounded text-white transition ${
-              submitting || !measurements
-                ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
+            disabled={submitting || !measurements || !selectedMaterial}
+            className="primary-button order-form-submit"
           >
             {submitting ? "Submitting..." : "Place Order"}
           </button>

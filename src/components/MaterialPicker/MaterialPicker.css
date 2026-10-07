@@ -1,0 +1,223 @@
+/* -------------------- Material Picker -------------------- */
+
+.material-picker-container {
+  --material-error: #9B2C2C;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+
+.material-picker-heading {
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.material-picker-source-toggle {
+  align-self: flex-start;
+  margin: 8px 0;
+}
+
+
+
+.material-filters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+}
+
+.material-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.material-filter-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  color: var(--color-text);
+  font-size: 15px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.material-filter-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-secondary);
+}
+
+.material-filters-error {
+  grid-column: 1 / -1;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background-color: color-mix(in srgb, var(--material-error) 8%, var(--color-white));
+  color: var(--material-error);
+  font-size: 14px;
+}
+
+.material-filters-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+
+
+.material-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  list-style: none;
+}
+
+.material-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Image row collapses to 0 when a card has no image */
+  grid-template-rows: auto 1fr auto;
+  column-gap: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.material-card.selected {
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+.material-card-image {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.material-card-info {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 16px 12px;
+}
+
+.material-card-name {
+  margin-bottom: 4px;
+  color: var(--color-text);
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.material-card-meta {
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.material-card-meta strong {
+  font-weight: 500;
+}
+
+.material-card-price {
+  margin-top: auto;
+  padding-top: 8px;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.material-card-source {
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.material-card-details-button,
+.material-card-select-button {
+  grid-row: 3;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.material-card-details-button {
+  margin-left: 16px;
+}
+
+.material-card-select-button {
+  margin-right: 16px;
+}
+
+.material-card-select-button:disabled {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.material-card-select-button:disabled:hover {
+  background-color: var(--color-accent);
+}
+
+
+/* -------------------- Status messages -------------------- */
+
+.material-picker-status {
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.material-picker-status.material-picker-error {
+  border-radius: var(--radius-sm);
+  background-color: color-mix(in srgb, var(--material-error) 8%, var(--color-white));
+  color: var(--material-error);
+}
+
+
+/* -------------------- Responsive -------------------- */
+
+@media (max-width: 768px) {
+  .material-filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .material-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .material-filters-actions {
+    justify-content: stretch;
+  }
+
+  .material-filters-actions > * {
+    flex: 1;
+  }
+}
