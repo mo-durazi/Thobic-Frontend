@@ -11,10 +11,17 @@ const initialFormData = {
   role: 'tailor',
 };
 
+const ROLE_LABELS = {
+  tailor: 'Tailor',
+  provider: 'Provider',
+};
+
 const AdminCreateUser = () => {
   const [formData, setFormData] = useState(initialFormData);
 
-  const [message, setMessage] = useState('');
+  // The account created by the last submit, for the success message
+  const [lastCreated, setLastCreated] = useState(null);
+  const [createdAccounts, setCreatedAccounts] = useState([]);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +38,7 @@ const AdminCreateUser = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setMessage('');
+    setLastCreated(null);
     setError('');
 
     const { username, email, password, confirmPassword, role } = formData;
@@ -49,9 +56,16 @@ const AdminCreateUser = () => {
     setIsSubmitting(true);
 
     try {
-      await createUserByAdmin({ username, email, password, role });
+      const created = await createUserByAdmin({ username, email, password, role });
+      const account = {
+        id: created.id,
+        username: created.username,
+        email: created.email,
+        role: created.role,
+      };
 
-      setMessage('Account created successfully.');
+      setLastCreated(account);
+      setCreatedAccounts((prev) => [account, ...prev]);
 
       setFormData(initialFormData);
     } catch (err) {
@@ -150,9 +164,21 @@ const AdminCreateUser = () => {
             </select>
           </div>
 
-          {message && (
+          {lastCreated && (
             <p className="form-message form-message-success">
-              {message}
+              {lastCreated.role === 'tailor' ? (
+                <>
+                  Tailor shop account <strong>{lastCreated.username}</strong>{' '}
+                  created. They'll complete their shop profile the first time
+                  they sign in.
+                </>
+              ) : (
+                <>
+                  Provider account <strong>{lastCreated.username}</strong>{' '}
+                  created. They'll complete their profile the first time they
+                  sign in.
+                </>
+              )}
             </p>
           )}
 
@@ -170,6 +196,35 @@ const AdminCreateUser = () => {
             {isSubmitting ? 'Creating...' : 'Create Account'}
           </button>
         </form>
+
+        {createdAccounts.length > 0 && (
+          <section className="admin-created">
+            <h2 className="admin-created-title">Recently Created Accounts</h2>
+            {/* TODO: Create a view all page for admins to see all accounts in system. */}
+            <p className="admin-created-note">
+              This list clears when you leave the page.
+            </p>
+
+            <ul className="admin-created-list">
+              {createdAccounts.map((account) => (
+                <li key={account.id} className="admin-created-item">
+                  <div className="admin-created-info">
+                    <span className="admin-created-username">
+                      {account.username}
+                    </span>
+                    <span className="admin-created-email">
+                      {account.email}
+                    </span>
+                  </div>
+
+                  <span className="admin-created-badge">
+                    {ROLE_LABELS[account.role] ?? account.role}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </main>
   );
