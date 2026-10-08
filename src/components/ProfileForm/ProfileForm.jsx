@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { getRoleHome } from '../../lib/roleHome';
+import ShopPhotoPlaceholder from '../ShopPhotoPlaceholder/ShopPhotoPlaceholder';
 import {
   createProfile,
   getMyProfile,
@@ -128,6 +129,10 @@ const ProfileForm = () => {
             </p>
           )}
         </div>
+
+        {isTailor && (
+          <ShopPhotoPlaceholder description="Shop photo" />
+        )}
 
         <form className="profile-form-form" onSubmit={handleSubmit}>
           <div className="form-field">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 
 import { getShops } from '../../services/shopService';
+import ShopPhotoPlaceholder from '../ShopPhotoPlaceholder/ShopPhotoPlaceholder';
 
 import './ShopList.css';
 
@@ -103,6 +104,7 @@ const ShopList = () => {
           {shops.map((shop) => (
             <li key={shop.id} className="shop-card">
               <Link to={`/shops/${shop.id}`}>
+                <ShopPhotoPlaceholder className="shop-photo-placeholder-card" />
                 <div className="shop-card-header">
                   <h2>{shop.display_name ?? shop.username}</h2>
 

@@ -6,10 +6,25 @@
 }
 
 .shop-profile-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 5vw, 56px);
   margin-bottom: 28px;
+  padding: clamp(20px, 4vw, 40px);
+  border: 1px solid rgba(86, 26, 35, 0.12);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-sm);
 }
 
-.shop-profile-header h1 {
+.shop-profile-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.shop-profile-heading h1 {
   color: var(--color-primary);
   font-size: 36px;
 }
@@ -88,13 +103,13 @@
     padding: 40px 0 56px;
   }
 
-  .shop-profile-header h1 {
-    font-size: 30px;
-  }
-
   .shop-profile-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .shop-profile-heading h1 {
+    font-size: 30px;
   }
 
   .shop-profile-actions {

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { getMyOrders } from '../../services/orderService';
 import { getMyProfile, updateMyProfile } from '../../services/profileService';
+import ShopPhotoPlaceholder from '../ShopPhotoPlaceholder/ShopPhotoPlaceholder';
 
 import "./TailorDashboard.css";
 
@@ -63,7 +64,13 @@ const TailorDashboard = () => {
       <section className="tailor-status">
         {profile ? (
           <>
-            <h2 className="tailor-status-title">Shop status</h2>
+            <div className="tailor-shop-identity">
+              <ShopPhotoPlaceholder className="shop-photo-placeholder-dashboard" />
+              <div className="tailor-shop-identity-details">
+                <h2>{profile.display_name || 'Your shop'}</h2>
+                <p>Shop status</p>
+              </div>
+            </div>
             <div className="tailor-status-options">
               {STATUS_OPTIONS.map(({ value, label }) => (
                 <button
