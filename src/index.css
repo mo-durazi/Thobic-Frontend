@@ -113,13 +113,15 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  min-height: 42px;
+  padding: 10px 20px;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: var(--color-primary);
   color: var(--color-white);
+  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .primary-button:hover {
@@ -130,17 +132,106 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  min-height: 42px;
+  padding: 10px 20px;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: transparent;
   color: var(--color-primary);
+  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .secondary-button:hover {
   background-color: var(--color-secondary);
+}
+
+/* Shared button geometry. Keep action colors in their semantic variants/classes. */
+button:not(.navbar-menu-toggle) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 42px !important;
+  padding: 10px 20px !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+button:not(.navbar-menu-toggle):not([class]) {
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.button-primary,
+.button-secondary,
+.button-danger,
+.button-success,
+.button-neutral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 20px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.button-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.button-primary:hover {
+  border-color: var(--color-primary-dark);
+  background-color: var(--color-primary-dark);
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.button-secondary:hover {
+  background-color: var(--color-secondary);
+}
+
+.button-danger {
+  border-color: #a12d35;
+  background-color: #a12d35;
+  color: var(--color-white);
+}
+
+.button-danger:hover {
+  border-color: #84232a;
+  background-color: #84232a;
+}
+
+.button-success {
+  border-color: #326b45;
+  background-color: #326b45;
+  color: var(--color-white);
+}
+
+.button-success:hover {
+  border-color: #285638;
+  background-color: #285638;
+}
+
+.button-neutral {
+  background-color: var(--color-white);
+  color: var(--color-text);
+}
+
+.button-neutral:hover {
+  background-color: var(--color-surface);
 }
 
 /* Shared page layout used by the feature pages. */

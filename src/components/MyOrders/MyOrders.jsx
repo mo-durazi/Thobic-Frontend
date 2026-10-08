@@ -86,7 +86,7 @@ export default function MyOrders() {
           </p>
           <button
             onClick={() => navigate("/")}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="button-primary"
           >
             Browse Tailoring Shops
           </button>
@@ -157,7 +157,7 @@ export default function MyOrders() {
               <div className="flex flex-wrap gap-2 items-center">
                 <Link
                   to={`/my-orders/${order.id}`}
-                  className="bg-gray-100 text-gray-700 px-3 py-1.5 text-sm rounded hover:bg-gray-200"
+                  className="button-neutral"
                 >
                   View
                 </Link>
@@ -169,7 +169,7 @@ export default function MyOrders() {
                 {order.status === "pending" && (
                   <button
                     onClick={() => handleDelete(order.id)}
-                    className="bg-red-50 text-red-600 px-3 py-1.5 text-sm rounded hover:bg-red-100"
+                    className="button-danger"
                   >
                     Delete
                   </button>
@@ -180,13 +180,13 @@ export default function MyOrders() {
                   <div className="flex gap-2 bg-blue-50 p-2 rounded border border-blue-200">
                     <button
                       onClick={() => handleRespond(order.id, true)}
-                      className="bg-green-600 text-white px-3 py-1 text-sm rounded hover:bg-green-700"
+                      className="button-success"
                     >
                       Accept Offer
                     </button>
                     <button
                       onClick={() => handleRespond(order.id, false)}
-                      className="bg-red-600 text-white px-3 py-1 text-sm rounded hover:bg-red-700"
+                      className="button-danger"
                     >
                       Decline Offer
                     </button>
@@ -197,7 +197,7 @@ export default function MyOrders() {
                 {order.status === "on_the_way" && (
                   <button
                     onClick={() => handleConfirmDelivery(order.id)}
-                    className="bg-green-600 text-white px-3 py-1.5 text-sm font-medium rounded hover:bg-green-700 animate-pulse"
+                    className="button-success animate-pulse"
                   >
                     Confirm Delivery
                   </button>
