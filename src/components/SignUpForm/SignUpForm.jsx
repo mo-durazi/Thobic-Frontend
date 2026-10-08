@@ -1,25 +1,20 @@
 import { useContext, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { Link, Navigate, useNavigate } from 'react-router';
 
-// Services
 import * as authService from '../../services/authService';
 import { UserContext } from '../../contexts/UserContext';
 import { getRoleHome } from '../../lib/roleHome';
-
+import './SignUpForm.css';
 
 const SignUpForm = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     passwordConf: '',
-    display_name: '',
-    road_no: '',
-    block_no: '',
-    building_no: '',
-    phone_number: '',
   });
   const { user: currentUser, setUser } = useContext(UserContext);
 
@@ -29,90 +24,78 @@ const SignUpForm = () => {
 
   const handleChange = (evt) => {
     setMessage('');
-    setFormData({ ...formData, [evt.target.name]: evt.target.value });
+    setFormData((current) => ({ ...current, [evt.target.name]: evt.target.value }));
   };
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
+    if (password !== passwordConf) {
+      setMessage('Passwords do not match.');
+      return;
+    }
+    if (password.length < 8) {
+      setMessage('Password must be at least 8 characters long.');
+      return;
+    }
 
-    if (password !== passwordConf) { setMessage('Passwords do not match.'); return; }
+    setIsSubmitting(true);
     try {
-      const payload = { ...formData };
-      delete payload.passwordConf;
-      const user = await authService.signUp({ ...payload, road_no: Number(payload.road_no), block_no: Number(payload.block_no), building_no: Number(payload.building_no) });
+      // Only account fields are persisted by the registration endpoint.
+      const user = await authService.signUp({ username, email, password });
       setUser(user);
       navigate(getRoleHome(user.role), { replace: true });
-    } catch (err) { setMessage(err.message || 'Unable to create your account.'); }
-  };
-
-  const isFormInvalid = () => {
-    return !(username && email && password && password === passwordConf && formData.display_name && formData.road_no && formData.block_no && formData.building_no && formData.phone_number);
+    } catch (err) {
+      setMessage(err.message || 'Unable to create your account.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <main>
-      <h1>Sign Up</h1>
-      <p>{message}</p>
-      <form onSubmit={handleSubmit}>
-        {['display_name', 'road_no', 'block_no', 'building_no', 'phone_number'].map((field) => <div key={field}><label htmlFor={field}>{({ display_name: 'Display name', road_no: 'Road number', block_no: 'Block number', building_no: 'Building number', phone_number: 'Phone number' })[field]}:</label><input id={field} name={field} type={field.includes('_no') ? 'number' : 'text'} value={formData[field]} onChange={handleChange} required /></div>)}
-        {/* Username Field */}
-        <div>
-          <label htmlFor='username'>Username:</label>
-          <input
-            type='text'
-            id='username'
-            value={username}
-            name='username'
-            onChange={handleChange}
-            required
-          />
+    <main className="signup-page">
+      <section className="signup-card" aria-labelledby="signup-title">
+        <div className="signup-heading">
+          <p className="signup-eyebrow">Welcome to Thobic</p>
+          <h1 id="signup-title">Create your account</h1>
+          <p>Sign up with your account details to get started.</p>
         </div>
 
-        {/* Email Field */}
-        <div>
-          <label htmlFor='email'>Email:</label>
-          <input
-            type='email'
-            id='email'
-            value={email}
-            name='email'
-            onChange={handleChange}
-            required
-          />
-        </div>
+        {message && <p className="signup-message" role="alert">{message}</p>}
 
-        {/* Password Field */}
-        <div>
-          <label htmlFor='password'>Password:</label>
-          <input
-            type='password'
-            id='password'
-            value={password}
-            name='password'
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <form className="signup-form" onSubmit={handleSubmit}>
+          <div className="signup-field">
+            <label htmlFor="username">Username</label>
+            <input autoComplete="username" type="text" id="username" name="username" value={username} onChange={handleChange} required />
+          </div>
 
-        {/* Coinfirm Password */}
-        <div>
-          <label htmlFor='confirm'>Confirm Password:</label>
-          <input
-            type='password'
-            id='confirm'
-            value={passwordConf}
-            name='passwordConf'
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="signup-field">
+            <label htmlFor="email">Email address</label>
+            <input autoComplete="email" type="email" id="email" name="email" value={email} onChange={handleChange} required />
+          </div>
 
-        {/* Form Actions */}
-        <div>
-          <button disabled={isFormInvalid()}>Sign Up</button>
-          <button onClick={() => navigate('/')}>Cancel</button>
-        </div>
-      </form>
+          <div className="signup-fields-row">
+            <div className="signup-field">
+              <label htmlFor="password">Password</label>
+              <input autoComplete="new-password" type="password" id="password" name="password" value={password} onChange={handleChange} minLength={8} required />
+              <span className="signup-hint">At least 8 characters</span>
+            </div>
+
+            <div className="signup-field">
+              <label htmlFor="passwordConf">Confirm password</label>
+              <input autoComplete="new-password" type="password" id="passwordConf" name="passwordConf" value={passwordConf} onChange={handleChange} minLength={8} required />
+            </div>
+          </div>
+
+          <div className="signup-actions">
+            <button className="signup-submit" type="submit" disabled={isSubmitting || !username || !email || !password || !passwordConf}>
+              {isSubmitting ? 'Creating account…' : 'Create account'}
+            </button>
+            <button className="signup-cancel" type="button" onClick={() => navigate('/')}>Cancel</button>
+          </div>
+        </form>
+
+        <p className="signup-login">Already have an account? <Link to="/sign-in">Log in</Link></p>
+      </section>
     </main>
   );
 };
