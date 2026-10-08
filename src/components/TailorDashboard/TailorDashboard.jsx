@@ -65,7 +65,7 @@ const TailorDashboard = () => {
         {profile ? (
           <>
             <div className="tailor-shop-identity">
-              <ShopPhotoPlaceholder className="shop-photo-placeholder-dashboard" />
+              <ShopPhotoPlaceholder className="shop-photo-placeholder-dashboard" imageUrl={profile.shop_photo_url} />
               <div className="tailor-shop-identity-details">
                 <h2>{profile.display_name || 'Your shop'}</h2>
                 <p>Shop status</p>

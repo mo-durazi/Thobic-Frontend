@@ -202,22 +202,6 @@ export default function TailorOrders() {
                   </p>
                 )}
 
-                <div className="tailor-order-preview">
-                  <div>
-                    <strong>Style:</strong>{" "}
-                    {JSON.stringify(order.style)}
-                  </div>
-
-                  <div>
-                    <strong>
-                      Measurements (Neck / Chest / Arm):
-                    </strong>{" "}
-                    {order.measurements_snapshot?.neck} /{" "}
-                    {order.measurements_snapshot?.chest} /{" "}
-                    {order.measurements_snapshot?.arm} cm
-                  </div>
-                </div>
-
                 {order.note && (
                   <p className="tailor-order-note">
                     Client Note: "{order.note}"

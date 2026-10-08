@@ -238,6 +238,7 @@ button:not(.navbar-menu-toggle):not([class]) {
 .orders-feedback.success { background: #edf6ef; color: #326b45; }
 .orders-feedback.error { background: #fff4f2; color: #8d2926; }
 .inline-action-confirm { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--color-text); }
+.profile-photo-note { max-width: 380px; margin: -16px 0 24px; color: var(--color-text-muted); font-size: .82rem; }
 .status-badge { display: inline-flex; align-items: center; padding: 5px 11px; border: 1px solid #d0d0d0; border-radius: 999px; background: #f2f2f2; color: #555; font-size: 12px; font-weight: 700; line-height: 1.2; text-transform: uppercase; letter-spacing: .03em; }
 .status-badge-pending { border-color: #f3d27a; background: #fff4cc; color: #735400; }
 .status-badge-accepted { border-color: #a9c9ef; background: #e8f2ff; color: #174d83; }
