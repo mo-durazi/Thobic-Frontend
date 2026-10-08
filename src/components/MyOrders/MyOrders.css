@@ -1,0 +1,21 @@
+.my-orders-feedback {
+  margin: 0 0 18px;
+  padding: 12px 16px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+}
+
+.my-orders-feedback.success {
+  background: #edf6ef;
+  color: #326b45;
+}
+
+.my-orders-feedback.error {
+  background: #fff4f2;
+  color: #8d2926;
+}
+
+.my-order-card {
+  border: 1px solid var(--color-primary) !important;
+}
+

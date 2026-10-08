@@ -46,6 +46,7 @@ const TailorOrderDetails = () => {
 
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState("");
+  const [confirmingReject, setConfirmingReject] = useState(false);
 
   const isTailor = user?.role === "tailor";
 
@@ -70,6 +71,7 @@ const TailorOrderDetails = () => {
 
   const runAction = async (action) => {
     setActionError("");
+    setConfirmingReject(false);
     setActionLoading(true);
     try {
       const updated = await action();
@@ -92,10 +94,7 @@ const TailorOrderDetails = () => {
     );
   };
 
-  const handleReject = () => {
-    if (!window.confirm("Reject this order?")) return;
-    runAction(() => tailorRejectOrder(order.id));
-  };
+  const handleReject = () => runAction(() => tailorRejectOrder(order.id));
 
   if (!user) return <Navigate to="/sign-in" />;
 
@@ -202,13 +201,15 @@ const TailorOrderDetails = () => {
       <footer className="mt-6 space-y-4">
         {order.status === "pending" && (
           <div className="space-y-4">
-            <button
-              onClick={handleReject}
-              disabled={actionLoading}
-              className="bg-red-600 text-white px-4 py-2 rounded mr-2"
-            >
-              Reject Order
-            </button>
+            {confirmingReject ? (
+              <div className="inline-action-confirm" role="group" aria-label="Confirm order rejection">
+                <span>Reject this order?</span>
+                <button type="button" onClick={handleReject} disabled={actionLoading} className="button-danger">Confirm</button>
+                <button type="button" onClick={() => setConfirmingReject(false)} className="button-secondary">Cancel</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => setConfirmingReject(true)} disabled={actionLoading} className="button-danger">Reject Order</button>
+            )}
 
             <form
               onSubmit={handleAccept}
