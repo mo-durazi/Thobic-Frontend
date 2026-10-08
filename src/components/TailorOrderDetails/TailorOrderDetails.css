@@ -98,6 +98,11 @@
   color: var(--color-text);
 }
 
+.tailor-order-style-summary {
+  color: var(--color-text-muted);
+  line-height: 1.8;
+}
+
 /* Workflow */
 
 .tailor-order-details footer {

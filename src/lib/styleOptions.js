@@ -16,8 +16,40 @@ export const STYLE_FIELDS = [
   { name: 'Sleeves', label: 'Sleeves' },
 ];
 
-// Add image paths here when the style reference photos are ready.
-export const STYLE_OPTION_IMAGES = {};
+// Add image paths here as reference photos become available.
+export const STYLE_OPTION_IMAGES = {
+  nationalti: {
+    Emirati: '/stylePic/Nationaliti/UAE.png',
+    Saudi: '/stylePic/Nationaliti/ksa.png',
+    Bahraini: '/stylePic/Nationaliti/Bahrain.png',
+    Kuwaiti: '/stylePic/Nationaliti/KW.png',
+    Qatari: '/stylePic/Nationaliti/qatar.png',
+  },
+  collar: {
+    Normal: '/stylePic/coller/c1%20%281%29.png',
+    Chinese: '/stylePic/coller/c2%20%281%29.png',
+    'V-shape': '/stylePic/coller/c3.png',
+    'V2-shape': '/stylePic/coller/c4.png',
+    'sticks-shape': '/stylePic/coller/c5.png',
+  },
+  placket: {
+    Hidden: '/stylePic/placket/p3.png',
+    'hidden-v': '/stylePic/placket/p4.png',
+    Normal: '/stylePic/placket/p1.png',
+    'Normal-v': '/stylePic/placket/p2.png',
+    zipper: '/stylePic/placket/p5.png',
+  },
+  chestPocket: {
+    shape1: '/stylePic/chest%20pocket/cp1.png',
+    shape2: '/stylePic/chest%20pocket/cp2.png',
+    shape3: '/stylePic/chest%20pocket/cp3.png',
+    shape4: '/stylePic/chest%20pocket/cp4.png',
+  },
+  Sleeves: {
+    Normal: '/stylePic/sleevs/h1.png',
+    'Cuff with buttons': '/stylePic/sleevs/h2.png',
+  },
+};
 
 export const DEFAULT_STYLE = Object.fromEntries(
   Object.entries(STYLE_OPTIONS).map(([name, options]) => [name, options[0]]),
@@ -58,3 +90,11 @@ export const getStyleFieldLabel = (name) =>
 
 export const getStyleOptionLabel = (field, value) =>
   STYLE_OPTION_LABELS[field]?.[value] ?? value;
+
+export const formatStyleSummary = (style = {}) =>
+  Object.entries(style ?? {})
+    .filter(([, value]) => value !== null && value !== undefined && value !== '')
+    .map(([field, value]) =>
+      `${getStyleFieldLabel(field)}: ${getStyleOptionLabel(field, String(value))}`,
+    )
+    .join(' · ');
