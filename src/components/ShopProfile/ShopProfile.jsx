@@ -86,7 +86,7 @@ const ShopProfile = () => {
   return (
     <main className="shop-profile">
       <header className="shop-profile-header">
-        <ShopPhotoPlaceholder className="shop-photo-placeholder-profile" />
+        <ShopPhotoPlaceholder className="shop-photo-placeholder-profile" imageUrl={shop.shop_photo_url} />
         <div className="shop-profile-heading">
           <h1>{shop.display_name}</h1>
 

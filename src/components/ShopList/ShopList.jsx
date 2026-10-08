@@ -104,7 +104,7 @@ const ShopList = () => {
           {shops.map((shop) => (
             <li key={shop.id} className="shop-card">
               <Link to={`/shops/${shop.id}`}>
-                <ShopPhotoPlaceholder className="shop-photo-placeholder-card" />
+                <ShopPhotoPlaceholder className="shop-photo-placeholder-card" imageUrl={shop.shop_photo_url} />
                 <div className="shop-card-header">
                   <h2>{shop.display_name ?? shop.username}</h2>
 

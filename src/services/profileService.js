@@ -78,9 +78,29 @@ const updateMyProfile = async (data) => {
   }
 };
 
+const uploadShopPhoto = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch(`${BASE_URL}/profiles/me/photo`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: formData,
+    });
+
+    return await handleResponse(res);
+  } catch (err) {
+    throw new Error(err.message || 'Could not upload shop photo.', { cause: err });
+  }
+};
+
 
 export {
   getMyProfile,
   createProfile,
   updateMyProfile,
+  uploadShopPhoto,
 };

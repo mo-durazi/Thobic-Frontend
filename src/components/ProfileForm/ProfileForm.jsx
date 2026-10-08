@@ -8,6 +8,7 @@ import {
   createProfile,
   getMyProfile,
   updateMyProfile,
+  uploadShopPhoto,
 } from '../../services/profileService';
 
 const initialFormData = {
@@ -30,6 +31,8 @@ const ProfileForm = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const [shopPhotoFile, setShopPhotoFile] = useState(null);
+  const [shopPhotoUrl, setShopPhotoUrl] = useState('');
 
   const isTailor = user.role === 'tailor';
 
@@ -49,6 +52,7 @@ const ProfileForm = () => {
             branch: profile.branch ?? '',
             status: profile.status ?? 'open',
           });
+          setShopPhotoUrl(profile.shop_photo_url ?? '');
         }
       } catch (err) {
         setError(err.message);
@@ -95,10 +99,24 @@ const ProfileForm = () => {
     try {
       if (hasProfile) {
         await updateMyProfile(payload);
-        setMessage('Profile saved.');
       } else {
         await createProfile(payload);
+        setHasProfile(true);
+      }
+
+      if (shopPhotoFile) {
+        const uploadedPhoto = await uploadShopPhoto(shopPhotoFile);
+        if (!uploadedPhoto?.shop_photo_url) {
+          throw new Error('The server did not return a saved shop photo URL.');
+        }
+        setShopPhotoUrl(uploadedPhoto.shop_photo_url);
+        setShopPhotoFile(null);
+      }
+
+      if (!hasProfile) {
         navigate(getRoleHome(user.role), { replace: true });
+      } else {
+        setMessage(shopPhotoFile ? 'Profile and shop photo saved.' : 'Profile saved.');
       }
     } catch (err) {
       setError(err.message);
@@ -131,7 +149,17 @@ const ProfileForm = () => {
         </div>
 
         {isTailor && (
-          <ShopPhotoPlaceholder description="Shop photo" />
+          <>
+            <ShopPhotoPlaceholder
+              className="shop-photo-placeholder-profile"
+              description="Shop photo"
+              editable
+              imageUrl={shopPhotoUrl}
+              onFileSelect={setShopPhotoFile}
+              disabled={saving}
+            />
+            <p className="profile-photo-note">Select a photo, then save your profile to upload it.</p>
+          </>
         )}
 
         <form className="profile-form-form" onSubmit={handleSubmit}>
