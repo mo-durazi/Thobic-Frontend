@@ -1,11 +1,12 @@
 import { useState, useContext } from 'react';
-import { Navigate, useNavigate } from 'react-router';
+import { Link, Navigate, useNavigate } from 'react-router';
 
 import { signIn } from '../../services/authService';
 import { getMyProfile } from '../../services/profileService';
 
 import { UserContext } from '../../contexts/UserContext';
 import { getRoleHome } from '../../lib/roleHome';
+import '../SignUpForm/SignUpForm.css';
 
 const SignInForm = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const SignInForm = () => {
 
   const handleChange = (evt) => {
     setMessage('');
-    setFormData({ ...formData, [evt.target.name]: evt.target.value });
+    setFormData((current) => ({ ...current, [evt.target.name]: evt.target.value }));
   };
 
   const handleSubmit = async (evt) => {
@@ -52,39 +53,51 @@ const SignInForm = () => {
   };
 
   return (
-    <main>
-      <h1>Sign In</h1>
-      <p>{message}</p>
-      <form autoComplete='off' onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor='email'>Username:</label>
-          <input
-            type='text'
-            autoComplete='off'
-            id='username'
-            value={formData.username}
-            name='username'
-            onChange={handleChange}
-            required
-          />
+    <main className="signup-page">
+      <section className="signup-card" aria-labelledby="signin-title">
+        <div className="signup-heading">
+          <p className="signup-eyebrow">Welcome back</p>
+          <h1 id="signin-title">Sign in to Thobic</h1>
+          <p>Enter your account details to continue.</p>
         </div>
-        <div>
-          <label htmlFor='password'>Password:</label>
-          <input
-            type='password'
-            autoComplete='off'
-            id='password'
-            value={formData.password}
-            name='password'
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <button className="button-primary" type="submit">Sign In</button>
-          <button className="button-secondary" type="button" onClick={() => navigate('/')}>Cancel</button>
-        </div>
-      </form>
+
+        {message && <p className="signup-message" role="alert">{message}</p>}
+
+        <form className="signup-form" autoComplete="on" onSubmit={handleSubmit}>
+          <div className="signup-field">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              autoComplete="username"
+              id="username"
+              value={formData.username}
+              name="username"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="signup-field">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              autoComplete="current-password"
+              id="password"
+              value={formData.password}
+              name="password"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="signup-actions">
+            <button className="button-primary" type="submit" disabled={signingIn || !formData.username || !formData.password}>
+              {signingIn ? 'Signing in...' : 'Sign in'}
+            </button>
+            <button className="button-secondary" type="button" onClick={() => navigate('/')}>Cancel</button>
+          </div>
+        </form>
+
+        <p className="signup-login">New to Thobic? <Link to="/sign-up">Create an account</Link></p>
+      </section>
     </main>
   );
 };
