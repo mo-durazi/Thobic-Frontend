@@ -5,6 +5,7 @@ export default function TailorMaterialOrders() {
   const [materialOrders, setMaterialOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     fetchTailorMaterialOrders();
@@ -25,18 +26,15 @@ export default function TailorMaterialOrders() {
   };
 
   const handleMarkDelivered = async (materialOrderId) => {
+    setFeedback(null);
     try {
       // Calls your backend route: PUT /api/material-orders/{id}/delivered
       await API.put(`/material-orders/${materialOrderId}/delivered`, {});
 
-      alert(
-        "Material marked as delivered! You can now start work on the Thoub order.",
-      );
+      setFeedback({ type: 'success', message: 'Material marked as delivered. You can now start work on the Thoub order.' });
       fetchTailorMaterialOrders(); // Refresh list
     } catch (err) {
-      alert(
-        err.response?.data?.detail || "Failed to mark material as delivered.",
-      );
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to mark material as delivered.' });
     }
   };
 
@@ -53,6 +51,7 @@ export default function TailorMaterialOrders() {
         Track materials ordered from external providers for your accepted thawb
         orders.
       </p>
+      {feedback && <p className={`orders-feedback ${feedback.type}`} role={feedback.type === 'error' ? 'alert' : 'status'}>{feedback.message}</p>}
 
       {materialOrders.length === 0 ? (
         <div className="text-center py-10 bg-gray-50 rounded-lg">
@@ -70,20 +69,8 @@ export default function TailorMaterialOrders() {
                   <span className="font-semibold text-lg">
                     Material Order #{matOrder.id}
                   </span>
-                  <span
-                    className={`px-2.5 py-0.5 text-xs font-bold rounded uppercase ${
-                      matOrder.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : matOrder.status === "accepted"
-                          ? "bg-blue-100 text-blue-800"
-                          : matOrder.status === "on_the_way"
-                            ? "bg-orange-100 text-orange-800"
-                            : matOrder.status === "delivered"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {matOrder.status}
+                  <span className={`status-badge status-badge-${matOrder.status}`}>
+                    {matOrder.status.replace(/_/g, ' ')}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -92,8 +79,8 @@ export default function TailorMaterialOrders() {
                 <p className="text-sm text-gray-600">Provider: {matOrder.provider_name || '—'}</p>
                 <p className="text-sm text-gray-600">Material: {matOrder.material_name || '—'}</p>
                 <p className="text-sm text-gray-600">
-                  Amount Ordered: {matOrder.amount} meters | Price: $
-                  {matOrder.price}
+                  Amount Ordered: {matOrder.amount} meters | Price:
+                  {' '}{matOrder.price} BHD
                 </p>
                 <p className="text-sm text-gray-600">
                   Expected Delivery Date:{" "}

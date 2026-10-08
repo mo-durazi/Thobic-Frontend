@@ -66,6 +66,7 @@ const OrderDetails = () => {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [confirmingAction, setConfirmingAction] = useState('');
 
   const isClient = user?.role === 'client';
 
@@ -94,6 +95,7 @@ const OrderDetails = () => {
 
   const runAction = async (action) => {
     setActionError('');
+    setConfirmingAction('');
     setActionLoading(true);
 
     try {
@@ -107,9 +109,8 @@ const OrderDetails = () => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Delete this order?')) return;
-
     setActionError('');
+    setConfirmingAction('');
     setActionLoading(true);
 
     try {
@@ -123,10 +124,7 @@ const OrderDetails = () => {
 
   const handleApprove = () => runAction(() => clientRespondOrder(order.id, true));
 
-  const handleDecline = () => {
-    if (!window.confirm('Decline this offer?')) return;
-    runAction(() => clientRespondOrder(order.id, false));
-  };
+  const handleDecline = () => runAction(() => clientRespondOrder(order.id, false));
 
   const handleConfirmDelivery = () =>
     runAction(() => markOrderDelivered(order.id));
@@ -281,9 +279,15 @@ const OrderDetails = () => {
         )}
 
         {order.status === 'pending' && (
-          <button type="button" onClick={handleDelete} disabled={actionLoading}>
-            Delete Order
-          </button>
+          confirmingAction === 'delete' ? (
+            <div className="inline-action-confirm" role="group" aria-label="Confirm order deletion">
+              <span>Delete this order?</span>
+              <button type="button" onClick={handleDelete} disabled={actionLoading} className="button-danger">Confirm</button>
+              <button type="button" onClick={() => setConfirmingAction('')} className="button-secondary">Cancel</button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => setConfirmingAction('delete')} disabled={actionLoading} className="button-danger">Delete Order</button>
+          )
         )}
 
         {order.status === 'accepted' && (
@@ -291,9 +295,15 @@ const OrderDetails = () => {
             <button type="button" onClick={handleApprove} disabled={actionLoading}>
               Approve Offer
             </button>
-            <button type="button" onClick={handleDecline} disabled={actionLoading}>
-              Decline Offer
-            </button>
+            {confirmingAction === 'decline' ? (
+              <div className="inline-action-confirm" role="group" aria-label="Confirm declining offer">
+                <span>Decline this offer?</span>
+                <button type="button" onClick={handleDecline} disabled={actionLoading} className="button-danger">Confirm</button>
+                <button type="button" onClick={() => setConfirmingAction('')} className="button-secondary">Cancel</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => setConfirmingAction('decline')} disabled={actionLoading} className="button-danger">Decline Offer</button>
+            )}
           </>
         )}
 
