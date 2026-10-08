@@ -29,6 +29,7 @@ const MaterialsManager = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
 
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -181,18 +182,11 @@ const MaterialsManager = () => {
   };
 
   const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      'Are you sure you want to delete this material?'
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
     try {
       setError('');
 
       await deleteMaterial(id);
+      setConfirmingDeleteId(null);
 
       await fetchMyMaterials();
     } catch (err) {
@@ -613,15 +607,15 @@ const MaterialsManager = () => {
                           Edit
                         </button>
 
-                        <button
-                          type="button"
-                          className="material-delete-button"
-                          onClick={() =>
-                            handleDelete(material.id)
-                          }
-                        >
-                          Delete
-                        </button>
+                        {confirmingDeleteId === material.id ? (
+                          <>
+                            <span className="material-delete-confirm">Delete this material?</span>
+                            <button type="button" className="material-delete-button" onClick={() => handleDelete(material.id)}>Confirm</button>
+                            <button type="button" className="material-edit-button" onClick={() => setConfirmingDeleteId(null)}>Cancel</button>
+                          </>
+                        ) : (
+                          <button type="button" className="material-delete-button" onClick={() => setConfirmingDeleteId(material.id)}>Delete</button>
+                        )}
                       </div>
                     </td>
                   </tr>

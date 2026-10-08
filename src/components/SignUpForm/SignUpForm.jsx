@@ -87,10 +87,10 @@ const SignUpForm = () => {
           </div>
 
           <div className="signup-actions">
-            <button className="signup-submit" type="submit" disabled={isSubmitting || !username || !email || !password || !passwordConf}>
+            <button className="button-primary signup-submit" type="submit" disabled={isSubmitting || !username || !email || !password || !passwordConf}>
               {isSubmitting ? 'Creating account…' : 'Create account'}
             </button>
-            <button className="signup-cancel" type="button" onClick={() => navigate('/')}>Cancel</button>
+            <button className="button-secondary signup-cancel" type="button" onClick={() => navigate('/')}>Cancel</button>
           </div>
         </form>
 

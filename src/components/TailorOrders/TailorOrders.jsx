@@ -17,6 +17,8 @@ export default function TailorOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [feedback, setFeedback] = useState(null);
+  const [confirmingRejectId, setConfirmingRejectId] = useState(null);
 
   const [acceptingOrderId, setAcceptingOrderId] = useState(null);
   const [acceptForm, setAcceptForm] = useState({
@@ -42,8 +44,7 @@ export default function TailorOrders() {
   };
 
   const handleReject = async (orderId) => {
-    if (!window.confirm("Are you sure you want to reject this order?")) return;
-
+    setFeedback(null);
     try {
       const updated = await tailorRejectOrder(orderId);
 
@@ -51,16 +52,16 @@ export default function TailorOrders() {
         orders.map((o) => (o.id === orderId ? updated : o))
       );
 
-      alert("Order rejected.");
+      setConfirmingRejectId(null);
+      setFeedback({ type: 'success', message: 'Order rejected.' });
     } catch (err) {
-      alert(
-        err.response?.data?.detail || "Failed to reject order."
-      );
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to reject order.' });
     }
   };
 
   const handleAcceptSubmit = async (e, orderId) => {
     e.preventDefault();
+    setFeedback(null);
 
     try {
       const updated = await tailorAcceptOrder(orderId, {
@@ -78,16 +79,14 @@ export default function TailorOrders() {
         final_deadline: "",
       });
 
-      alert("Order accepted and sent to client for review!");
+      setFeedback({ type: 'success', message: 'Order accepted and sent to the client for review.' });
     } catch (err) {
-      alert(
-        err.response?.data?.detail ||
-          "Failed to accept order. Check minimum price rules."
-      );
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to accept order. Check minimum price rules.' });
     }
   };
 
   const handleProgressStep = async (orderId, step) => {
+    setFeedback(null);
     try {
       let updated;
 
@@ -107,12 +106,9 @@ export default function TailorOrders() {
         orders.map((o) => (o.id === orderId ? updated : o))
       );
 
-      alert(`Order status updated to ${step}!`);
+      setFeedback({ type: 'success', message: `Order status updated to ${step}.` });
     } catch (err) {
-      alert(
-        err.response?.data?.detail ||
-          "Action failed. Check constraint rules (e.g., material delivery status)."
-      );
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Action failed. Check order requirements, including material delivery.' });
     }
   };
 
@@ -146,6 +142,7 @@ export default function TailorOrders() {
       <h1 className="tailor-orders-title">
         Tailor Orders Management
       </h1>
+      {feedback && <p className={`orders-feedback ${feedback.type}`} role={feedback.type === 'error' ? 'alert' : 'status'}>{feedback.message}</p>}
 
       <label className="tailor-orders-filter">
         <span>Filter by status</span>
@@ -183,7 +180,7 @@ export default function TailorOrders() {
                     Order #{order.id}
                   </span>
 
-                  <span className="tailor-order-status">
+                  <span className={`tailor-order-status status-badge status-badge-${order.status}`}>
                     {order.status.replace(/\_/g, " ")}
                   </span>
                 </div>
@@ -254,13 +251,21 @@ export default function TailorOrders() {
                         : "Accept Order"}
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() => handleReject(order.id)}
-                      className="tailor-order-action-button tailor-order-action-danger"
-                    >
-                      Reject Order
-                    </button>
+                    {confirmingRejectId === order.id ? (
+                      <div className="inline-action-confirm" role="group" aria-label={`Confirm rejection of order ${order.id}`}>
+                        <span>Reject this order?</span>
+                        <button type="button" onClick={() => handleReject(order.id)} className="tailor-order-action-button tailor-order-action-danger">Confirm</button>
+                        <button type="button" onClick={() => setConfirmingRejectId(null)} className="tailor-order-action-button">Cancel</button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingRejectId(order.id)}
+                        className="tailor-order-action-button tailor-order-action-danger"
+                      >
+                        Reject Order
+                      </button>
+                    )}
                   </>
                 )}
 

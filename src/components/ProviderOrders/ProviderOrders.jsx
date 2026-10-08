@@ -6,6 +6,7 @@ export default function ProviderOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [feedback, setFeedback] = useState(null);
 
   // States for interactive modals/forms
   const [acceptingId, setAcceptingId] = useState(null);
@@ -33,46 +34,47 @@ export default function ProviderOrders() {
 
   const handleAccept = async (e, orderId) => {
     e.preventDefault();
+    setFeedback(null);
     try {
       await API.put(`/material-orders/${orderId}/accept`, {
         expected_delivery_date: expectedDate,
       });
 
-      alert("Material order accepted successfully!");
+      setFeedback({ type: 'success', message: 'Material order accepted successfully.' });
       setAcceptingId(null);
       setExpectedDate("");
       fetchProviderOrders();
     } catch (err) {
-      alert(err.response?.data?.detail || "Failed to accept order.");
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to accept order.' });
     }
   };
 
   const handleReject = async (e, orderId) => {
     e.preventDefault();
+    setFeedback(null);
     try {
       await API.put(`/material-orders/${orderId}/reject`, {
         rejection_reason: rejectionReason,
       });
 
-      alert(
-        "Material order rejected. The corresponding Thoub order has been cancelled.",
-      );
+      setFeedback({ type: 'success', message: 'Material order rejected. The corresponding Thoub order has been cancelled.' });
       setRejectingId(null);
       setRejectionReason("");
       fetchProviderOrders();
     } catch (err) {
-      alert(err.response?.data?.detail || "Failed to reject order.");
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to reject order.' });
     }
   };
 
   const handleMarkOnTheWay = async (orderId) => {
+    setFeedback(null);
     try {
       await API.put(`/material-orders/${orderId}/on-the-way`, {});
 
-      alert('Material order marked as "On the Way"!');
+      setFeedback({ type: 'success', message: 'Material order marked as on the way.' });
       fetchProviderOrders();
     } catch (err) {
-      alert(err.response?.data?.detail || "Failed to update status.");
+      setFeedback({ type: 'error', message: err.response?.data?.detail || 'Failed to update status.' });
     }
   };
 
@@ -88,6 +90,7 @@ export default function ProviderOrders() {
       <p className="text-gray-600 text-center mb-6">
         Manage requests from tailoring shops for your in-stock materials.
       </p>
+      {feedback && <p className={`orders-feedback ${feedback.type}`} role={feedback.type === 'error' ? 'alert' : 'status'}>{feedback.message}</p>}
       <label className="order-filter">Filter by status <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}><option value="all">All statuses</option>{[...new Set(materialOrders.map((o) => o.status))].map((status) => <option key={status} value={status}>{status.replace(/_/g, ' ')}</option>)}</select></label>
 
       {materialOrders.length === 0 ? (
@@ -106,20 +109,8 @@ export default function ProviderOrders() {
                   <span className="font-semibold text-lg">
                     Material Order #{order.id}
                   </span>
-                  <span
-                    className={`px-2.5 py-0.5 text-xs font-bold rounded uppercase ${
-                      order.status === "pending"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : order.status === "accepted"
-                          ? "bg-blue-100 text-blue-800"
-                          : order.status === "on_the_way"
-                            ? "bg-orange-100 text-orange-800"
-                            : order.status === "delivered"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {order.status}
+                  <span className={`status-badge status-badge-${order.status}`}>
+                    {order.status.replace(/_/g, ' ')}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -128,8 +119,8 @@ export default function ProviderOrders() {
                 <p className="text-sm text-gray-600">Tailor: {order.tailor_name || '—'}</p>
                 <p className="text-sm text-gray-600">Material: {order.material_name || '—'}</p>
                 <p className="text-sm text-gray-600">
-                  Amount Requested: {order.amount} meters | Total Price: $
-                  {order.price}
+                  Amount Requested: {order.amount} meters | Total Price:
+                  {' '}{order.price} BHD
                 </p>
                 <p className="text-sm text-gray-600">
                   Expected Delivery: {order.expected_delivery_date || "Not set"}

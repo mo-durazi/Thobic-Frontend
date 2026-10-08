@@ -345,6 +345,11 @@
   cursor: pointer;
 }
 
+.material-delete-confirm {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
 .material-edit-button {
   border: 1px solid #ecd2c5;
   background: #ffffff;

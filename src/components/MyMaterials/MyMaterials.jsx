@@ -8,6 +8,8 @@ const MyMaterials = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [feedback, setFeedback] = useState(null);
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,6 +68,8 @@ const MyMaterials = () => {
           Add Material
         </button>
       </div>
+
+      {feedback && <p className={`materials-feedback ${feedback.type}`} role={feedback.type === 'error' ? 'alert' : 'status'}>{feedback.message}</p>}
 
       {materials.length === 0 ? (
         <div className="materials-empty">
@@ -142,20 +146,28 @@ const MyMaterials = () => {
                         Edit
                       </button>
 
-                      <button
-                        type="button"
-                        className="material-action-button delete"
-                        onClick={async () => {
-                          if (!window.confirm(`Delete ${material.name}?`)) return;
-                          try { await deleteMaterial(material.id); setMaterials((items) => items.filter((item) => item.id !== material.id)); }
-                          catch (err) { setError(err.message); }
-                        }}
-                      >
-                        Delete
-                      </button>
+                      {confirmingDeleteId === material.id ? (
+                        <>
+                          <span className="material-delete-confirm">Delete {material.name}?</span>
+                          <button type="button" className="material-action-button delete" onClick={async () => {
+                            setFeedback(null);
+                            try {
+                              await deleteMaterial(material.id);
+                              setMaterials((items) => items.filter((item) => item.id !== material.id));
+                              setConfirmingDeleteId(null);
+                              setFeedback({ type: 'success', message: 'Material deleted.' });
+                            } catch (err) {
+                              setFeedback({ type: 'error', message: err.message || 'Could not delete material.' });
+                            }
+                          }}>Confirm</button>
+                          <button type="button" className="material-action-button" onClick={() => setConfirmingDeleteId(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <button type="button" className="material-action-button delete" onClick={() => { setFeedback(null); setConfirmingDeleteId(material.id); }}>Delete</button>
+                      )}
                       <button type="button" className="material-action-button" onClick={async () => {
                         try { await updateMaterial(material.id, { ...material, is_available: !material.is_available }); setMaterials((items) => items.map((item) => item.id === material.id ? { ...item, is_available: !item.is_available } : item)); }
-                        catch (err) { setError(err.message); }
+                        catch (err) { setFeedback({ type: 'error', message: err.message || 'Could not update material availability.' }); }
                       }}>{material.is_available ? 'Mark unavailable' : 'Mark available'}</button>
                     </div>
                   </td>

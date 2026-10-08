@@ -113,13 +113,15 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  min-height: 42px;
+  padding: 10px 20px;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: var(--color-primary);
   color: var(--color-white);
+  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .primary-button:hover {
@@ -130,18 +132,122 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  min-height: 42px;
+  padding: 10px 20px;
   border: 1px solid var(--color-primary);
   border-radius: var(--radius-sm);
   background-color: transparent;
   color: var(--color-primary);
+  font-size: 14px;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .secondary-button:hover {
   background-color: var(--color-secondary);
 }
+
+/* Shared button geometry. Keep action colors in their semantic variants/classes. */
+button:not(.navbar-menu-toggle) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 42px !important;
+  padding: 10px 20px !important;
+  border-radius: var(--radius-sm) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+button:not(.navbar-menu-toggle):not([class]) {
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.button-primary,
+.button-secondary,
+.button-danger,
+.button-success,
+.button-neutral {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 20px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.button-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.button-primary:hover {
+  border-color: var(--color-primary-dark);
+  background-color: var(--color-primary-dark);
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+}
+
+.button-secondary:hover {
+  background-color: var(--color-secondary);
+}
+
+.button-danger {
+  border-color: #a12d35;
+  background-color: #a12d35;
+  color: var(--color-white);
+}
+
+.button-danger:hover {
+  border-color: #84232a;
+  background-color: #84232a;
+}
+
+.button-success {
+  border-color: #326b45;
+  background-color: #326b45;
+  color: var(--color-white);
+}
+
+.button-success:hover {
+  border-color: #285638;
+  background-color: #285638;
+}
+
+.button-neutral {
+  background-color: var(--color-white);
+  color: var(--color-text);
+}
+
+.button-neutral:hover {
+  background-color: var(--color-surface);
+}
+
+.orders-feedback { margin: 0 0 18px; padding: 12px 16px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
+.orders-feedback.success { background: #edf6ef; color: #326b45; }
+.orders-feedback.error { background: #fff4f2; color: #8d2926; }
+.inline-action-confirm { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--color-text); }
+.status-badge { display: inline-flex; align-items: center; padding: 5px 11px; border: 1px solid #d0d0d0; border-radius: 999px; background: #f2f2f2; color: #555; font-size: 12px; font-weight: 700; line-height: 1.2; text-transform: uppercase; letter-spacing: .03em; }
+.status-badge-pending { border-color: #f3d27a; background: #fff4cc; color: #735400; }
+.status-badge-accepted { border-color: #a9c9ef; background: #e8f2ff; color: #174d83; }
+.status-badge-confirmed { border-color: #c1b9f0; background: #f0edff; color: #44358a; }
+.status-badge-in_progress { border-color: #d4b4ef; background: #f6edff; color: #653391; }
+.status-badge-ready { border-color: #9edbd4; background: #e8faf7; color: #17675e; }
+.status-badge-on_the_way { border-color: #f3c49a; background: #fff0e3; color: #8a4a12; }
+.status-badge-delivered { border-color: #a9d8b4; background: #eaf7ed; color: #28633a; }
+.status-badge-rejected, .status-badge-tailor_rejected, .status-badge-client_rejected { border-color: #e8b3b0; background: #fff0ef; color: #8d2926; }
+.status-badge-canceled, .status-badge-cancelled { border-color: #d0d0d0; background: #f2f2f2; color: #555; }
 
 /* Shared page layout used by the feature pages. */
 main:not(.landing) { width: min(100% - 32px, 1040px); margin: 40px auto 72px; }
