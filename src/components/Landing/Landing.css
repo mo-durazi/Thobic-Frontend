@@ -1,6 +1,5 @@
 /* ================================
    Landing Page
-   Desktop / Laptop Base Styles
 ================================ */
 
 .landing {
@@ -9,7 +8,7 @@
 }
 
 .landing .container {
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
@@ -20,20 +19,25 @@
 ================================ */
 
 .landing-hero {
-  min-height: 650px;
-  display: flex;
-  align-items: center;
+  padding: 48px 0 72px;
 }
 
-.landing-hero-content {
+.landing-hero-card {
+  position: relative;
+  min-height: 600px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 0.85fr;
   align-items: center;
-  gap: 80px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
 
 .hero-content {
+  position: relative;
+  z-index: 2;
   max-width: 600px;
+  padding: 72px 40px 72px 72px;
 }
 
 .hero-label {
@@ -63,62 +67,96 @@
 .hero-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.hero-art {
+.hero-visual {
   position: relative;
-  overflow: hidden;
-  min-height: 500px;
+  align-self: stretch;
+  min-height: 600px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  border-radius: var(--radius-lg);
-  background:
-    repeating-linear-gradient(112deg, transparent 0 18px, rgba(255,255,255,.12) 19px 20px),
-    radial-gradient(ellipse at 70% 22%, rgba(236,210,197,.9), transparent 36%),
-    linear-gradient(145deg, #4b1822, #8b3e48 48%, #38131b);
-  color: #fff8ef;
-  font-size: 18px;
-  font-weight: 600;
+  overflow: hidden;
 }
-.hero-art::before, .hero-art::after { content: ''; position: absolute; width: 68%; height: 135%; top: -18%; left: 16%; border: 1px solid rgba(236,210,197,.55); border-radius: 48% 48% 18% 18%; transform: rotate(12deg); }
-.hero-art::after { width: 52%; left: 24%; transform: rotate(-12deg); border-color: rgba(255,248,239,.28); }
-.hero-art p, .hero-art span, .hero-art-mark { position: relative; z-index: 1; }
-.hero-art-mark { display: grid; place-items: center; width: 90px; height: 90px; margin-bottom: 20px; border: 1px solid rgba(255,248,239,.75); border-radius: 50%; font-family: var(--font-heading); font-size: 52px; }
-.hero-art span { margin-top: 6px; color: rgba(255,248,239,.75); font-size: 13px; font-weight: 400; letter-spacing: .08em; }
+
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  top: 70px;
+  right: 10%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  opacity: 0.35;
+}
+
+.hero-thawb-image {
+  position: absolute;
+  z-index: 1;
+  top: -10px;
+  left: 50%;
+  width: 470px;
+  max-width: none;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: top center;
+}
 
 /* ================================
    Features
 ================================ */
 
 .landing-features {
-  background-color: var(--color-surface);
+  padding: 72px 0;
+  background-color: var(--color-background);
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  gap: 24px;
 }
 
 .feature {
-  padding: 20px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 28px 24px;
+  border: 1px solid rgba(86, 26, 35, 0.08);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--color-secondary);
+  color: var(--color-primary);
+}
+
+.feature-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .feature h2 {
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   color: var(--color-primary);
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 600;
+  line-height: 1.3;
 }
 
 .feature p {
-  max-width: 340px;
   color: var(--color-text-muted);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -127,12 +165,13 @@
 ================================ */
 
 .how-it-works {
-  background-color: var(--color-background);
+  padding: 80px 0;
+  background-color: var(--color-surface);
 }
 
 .section-heading {
   max-width: 650px;
-  margin-bottom: 56px;
+  margin-bottom: 52px;
 }
 
 .section-label {
@@ -152,17 +191,17 @@
 .steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
+  gap: 24px;
 }
 
 .step {
-  padding-top: 24px;
+  padding: 28px 24px;
   border-top: 1px solid var(--color-secondary);
 }
 
 .step-number {
   display: block;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   color: var(--color-accent);
   font-size: 14px;
   font-weight: 700;
@@ -170,7 +209,7 @@
 }
 
 .step h3 {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: var(--color-primary);
   font-size: 26px;
   font-weight: 600;
@@ -179,55 +218,65 @@
 .step p {
   max-width: 300px;
   color: var(--color-text-muted);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
 }
-
 
 /* ================================
    Tablet
 ================================ */
 
 @media (max-width: 1024px) {
-  .landing-hero-content {
-    gap: 48px;
+  .landing-hero-card {
+    grid-template-columns: 1fr 0.8fr;
+  }
+
+  .hero-content {
+    padding-left: 48px;
   }
 
   .hero-content h1 {
     font-size: 58px;
   }
 
-  .hero-art {
-    min-height: 420px;
+  .hero-visual {
+    min-height: 540px;
   }
 
-  .features-grid,
-  .steps {
-    gap: 32px;
+  .hero-thawb-image {
+    width: 410px;
   }
 
-  .section-heading h2 {
-    font-size: 42px;
+  .features-grid {
+    gap: 16px;
+  }
+
+  .feature {
+    padding: 22px 18px;
   }
 }
-
 
 /* ================================
    Mobile
 ================================ */
 
 @media (max-width: 768px) {
-  .landing-hero {
-    min-height: auto;
+  .landing .container {
+    width: calc(100% - 24px);
   }
 
-  .landing-hero-content {
+  .landing-hero {
+    padding: 24px 0 48px;
+  }
+
+  .landing-hero-card {
     grid-template-columns: 1fr;
-    gap: 40px;
+    min-height: auto;
   }
 
   .hero-content {
     max-width: none;
+    padding: 48px 28px 24px;
   }
 
   .hero-content h1 {
@@ -238,22 +287,29 @@
     font-size: 16px;
   }
 
-  .hero-art {
-    min-height: 350px;
+  .hero-visual {
+    min-height: 380px;
+  }
+
+  .hero-visual::before {
+    top: 30px;
+    right: 15%;
+    width: 70%;
+    height: 80%;
+  }
+
+  .hero-thawb-image {
+    width: 340px;
+    top: -5px;
   }
 
   .features-grid,
   .steps {
     grid-template-columns: 1fr;
-    gap: 24px;
   }
 
   .feature {
-    padding: 12px 0;
-  }
-
-  .section-heading {
-    margin-bottom: 40px;
+    padding: 24px;
   }
 
   .section-heading h2 {
@@ -261,12 +317,15 @@
   }
 }
 
-
 /* ================================
    Small Phones
 ================================ */
 
 @media (max-width: 480px) {
+  .hero-content {
+    padding: 40px 22px 20px;
+  }
+
   .hero-content h1 {
     font-size: 40px;
   }
@@ -286,12 +345,35 @@
     width: 100%;
   }
 
-  .hero-art {
-    min-height: 280px;
+  .hero-visual {
+    min-height: 320px;
+  }
+
+  .hero-thawb-image {
+    width: 290px;
+  }
+
+  .landing-features {
+    padding: 56px 0;
+  }
+
+  .feature {
+    gap: 14px;
+    padding: 20px;
+  }
+
+  .feature-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .feature-icon svg {
+    width: 21px;
+    height: 21px;
   }
 
   .feature h2 {
-    font-size: 22px;
+    font-size: 19px;
   }
 
   .section-heading h2 {
