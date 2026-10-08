@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
-import { getStyleFieldLabel, getStyleOptionLabel } from '../../lib/styleOptions';
+import { formatStyleSummary } from '../../lib/styleOptions';
 import {
   clientRespondOrder,
   deleteOrder,
@@ -170,7 +170,7 @@ const OrderDetails = () => {
 
   const showTimeline = !CLOSED_STATUSES.includes(order.status);
   const currentStep = TIMELINE_STEPS.indexOf(order.status);
-  const styleEntries = Object.entries(order.style ?? {});
+  const styleSummary = formatStyleSummary(order.style);
   const measurements = order.measurements_snapshot ?? {};
 
   return (
@@ -255,14 +255,8 @@ const OrderDetails = () => {
 
       <section className="order-style">
         <h2>Style</h2>
-        {styleEntries.length > 0 ? (
-          <ul>
-            {styleEntries.map(([key, value]) => (
-              <li key={key}>
-                {getStyleFieldLabel(key)}: {getStyleOptionLabel(key, String(value))}
-              </li>
-            ))}
-          </ul>
+        {styleSummary ? (
+          <p className="order-style-summary">{styleSummary}</p>
         ) : (
           <p>No style options.</p>
         )}

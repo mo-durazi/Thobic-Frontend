@@ -204,6 +204,7 @@ main:not(.landing) > h1 { margin-bottom: 20px; color: var(--color-primary); }
 .order-measurements dt { color: var(--color-text-muted); font-size: .8rem; }
 .order-measurements dd { font-weight: 600; }
 .shop-profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.order-style-summary { color: var(--color-text-muted); line-height: 1.8; }
 .shop-profile-info, .shop-profile-actions { padding: 20px; border: 1px solid rgba(86,26,35,.1); border-radius: var(--radius-md); background: white; }
 .shop-profile-info p + p { margin-top: 8px; }
 .shop-profile-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }

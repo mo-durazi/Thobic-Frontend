@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
-import { getStyleFieldLabel, getStyleOptionLabel } from "../../lib/styleOptions";
+import { formatStyleSummary } from "../../lib/styleOptions";
 import {
   getOrderById,
   tailorAcceptOrder,
@@ -126,7 +126,7 @@ const TailorOrderDetails = () => {
       </main>
     );
 
-  const styleEntries = Object.entries(order.style ?? {});
+  const styleSummary = formatStyleSummary(order.style);
   const measurements = order.measurements_snapshot ?? {};
 
   return (
@@ -191,14 +191,8 @@ const TailorOrderDetails = () => {
 
       <section className="mt-4 bg-white p-4 border rounded shadow-sm">
         <h2 className="font-semibold mb-2">Style Choices</h2>
-        {styleEntries.length > 0 ? (
-          <ul>
-            {styleEntries.map(([k, v]) => (
-              <li key={k}>
-                {getStyleFieldLabel(k)}: {getStyleOptionLabel(k, String(v))}
-              </li>
-            ))}
-          </ul>
+        {styleSummary ? (
+          <p className="tailor-order-style-summary">{styleSummary}</p>
         ) : (
           <p>No style options.</p>
         )}

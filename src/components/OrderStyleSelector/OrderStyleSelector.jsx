@@ -20,6 +20,7 @@ const OrderStyleSelector = ({ value, onChange, className = '' }) => (
           <div className="order-style-options" role="radiogroup" aria-labelledby={groupId}>
             {STYLE_OPTIONS[name].map((option) => {
               const image = STYLE_OPTION_IMAGES[name]?.[option];
+              const showImageArea = name !== 'sidePockect';
               const selected = value[name] === option;
 
               return (
@@ -35,16 +36,18 @@ const OrderStyleSelector = ({ value, onChange, className = '' }) => (
                     checked={selected}
                     onChange={() => onChange(name, option)}
                   />
-                  <span className="order-style-option-card">
-                    <span className="order-style-option-image">
-                      {image ? (
-                        <img src={image} alt="" loading="lazy" />
-                      ) : (
-                        <span className="order-style-option-image-placeholder" aria-hidden="true">
-                          Image
-                        </span>
-                      )}
-                    </span>
+                  <span className={`order-style-option-card${showImageArea ? '' : ' text-only'}`}>
+                    {showImageArea && (
+                      <span className="order-style-option-image">
+                        {image ? (
+                          <img src={image} alt="" loading="lazy" />
+                        ) : (
+                          <span className="order-style-option-image-placeholder" aria-hidden="true">
+                            Photo coming soon
+                          </span>
+                        )}
+                      </span>
+                    )}
                     <span className="order-style-option-label">
                       {getStyleOptionLabel(name, option)}
                     </span>

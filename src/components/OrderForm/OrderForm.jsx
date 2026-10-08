@@ -5,7 +5,7 @@ import API from "../../services/api"; // For checking measurements
 import MaterialPicker from "../MaterialPicker/MaterialPicker";
 import OrderStyleSelector from "../OrderStyleSelector/OrderStyleSelector";
 import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
-import { DEFAULT_STYLE } from "../../lib/styleOptions";
+import { DEFAULT_STYLE, STYLE_FIELDS } from "../../lib/styleOptions";
 import "./OrderForm.css";
 
 export default function OrderForm() {
@@ -45,7 +45,7 @@ export default function OrderForm() {
 
   const handleSelectMaterial = (material) => {
     setSelectedMaterial(material);
-    setFormData({ ...formData, material_id: material.id });
+    setFormData((current) => ({ ...current, material_id: material.id }));
   };
 
   const estimatedCost =
@@ -66,7 +66,13 @@ export default function OrderForm() {
     try {
       setSubmitting(true);
       // Calls the updated createOrder service matching backend /api/orders
-      await createOrder(formData);
+      await createOrder({
+        ...formData,
+        material_id: selectedMaterial.id,
+        style: Object.fromEntries(
+          STYLE_FIELDS.map(({ name }) => [name, formData.style[name]]),
+        ),
+      });
       navigate("/my-orders"); // Route to client's orders dashboard
     } catch (err) {
       setSubmitError(err?.response?.data?.detail || err?.message || "Failed to place order. Please check your inputs.");
