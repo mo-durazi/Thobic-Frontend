@@ -9,6 +9,8 @@ import {
   markOrderReady,
   markOrderOnTheWay,
 } from "../../services/orderService";
+import { MEASUREMENT_FIELDS } from '../../lib/measurementFields';
+import { getStyleFieldLabel, getStyleOptionLabel } from '../../lib/styleOptions';
 
 import "./TailorOrders.css";
 
@@ -201,6 +203,34 @@ export default function TailorOrders() {
                     {order.final_deadline}
                   </p>
                 )}
+
+                <div className="tailor-order-details-summary">
+                  <section>
+                    <h3>Style</h3>
+                    {order.style && typeof order.style === 'object' && Object.entries(order.style).some(([, value]) => value !== null && value !== undefined && value !== '') ? (
+                      <ul>
+                        {Object.entries(order.style)
+                          .filter(([, value]) => value !== null && value !== undefined && value !== '')
+                          .map(([field, value]) => (
+                            <li key={field}><strong>{getStyleFieldLabel(field)}:</strong> {getStyleOptionLabel(field, String(value))}</li>
+                          ))}
+                      </ul>
+                    ) : <p>No style details recorded.</p>}
+                  </section>
+
+                  <section>
+                    <h3>Measurements</h3>
+                    {MEASUREMENT_FIELDS.some(({ name }) => order.measurements_snapshot?.[name] !== null && order.measurements_snapshot?.[name] !== undefined && order.measurements_snapshot?.[name] !== '') ? (
+                      <ul>
+                        {MEASUREMENT_FIELDS
+                          .filter(({ name }) => order.measurements_snapshot?.[name] !== null && order.measurements_snapshot?.[name] !== undefined && order.measurements_snapshot?.[name] !== '')
+                          .map(({ name, label }) => (
+                            <li key={name}><strong>{label}:</strong> {order.measurements_snapshot[name]} cm</li>
+                          ))}
+                      </ul>
+                    ) : <p>No measurements recorded.</p>}
+                  </section>
+                </div>
 
                 {order.note && (
                   <p className="tailor-order-note">

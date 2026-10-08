@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router";
 import { UserContext } from "../../contexts/UserContext";
 import { MEASUREMENT_FIELDS } from "../../lib/measurementFields";
-import { formatStyleSummary } from "../../lib/styleOptions";
+import { getStyleFieldLabel, getStyleOptionLabel } from "../../lib/styleOptions";
 import {
   getOrderById,
   tailorAcceptOrder,
@@ -125,8 +125,13 @@ const TailorOrderDetails = () => {
       </main>
     );
 
-  const styleSummary = formatStyleSummary(order.style);
+  const styleEntries = order.style && typeof order.style === 'object'
+    ? Object.entries(order.style).filter(([, value]) => value !== null && value !== undefined && value !== '')
+    : [];
   const measurements = order.measurements_snapshot ?? {};
+  const recordedMeasurements = MEASUREMENT_FIELDS.filter(({ name }) =>
+    measurements[name] !== null && measurements[name] !== undefined && measurements[name] !== ''
+  );
 
   return (
     <main className="tailor-order-details p-6">
@@ -179,22 +184,26 @@ const TailorOrderDetails = () => {
 
       <section className="mt-4 bg-white p-4 border rounded shadow-sm">
         <h2 className="font-semibold mb-2">Client Measurements Snapshot</h2>
-        <ul className="text-sm grid grid-cols-2 gap-2">
-          {MEASUREMENT_FIELDS.map(({ name, label }) => (
-            <li key={name}>
-              <strong>{label}:</strong> {measurements[name] ?? "—"} cm
-            </li>
-          ))}
-        </ul>
+        {recordedMeasurements.length > 0 ? (
+          <ul className="tailor-order-bullet-list text-sm">
+            {recordedMeasurements.map(({ name, label }) => (
+              <li key={name}>
+                <strong>{label}:</strong> {measurements[name]} cm
+              </li>
+            ))}
+          </ul>
+        ) : <p>No measurements recorded.</p>}
       </section>
 
       <section className="mt-4 bg-white p-4 border rounded shadow-sm">
-        <h2 className="font-semibold mb-2">Style Choices</h2>
-        {styleSummary ? (
-          <p className="tailor-order-style-summary">{styleSummary}</p>
-        ) : (
-          <p>No style options.</p>
-        )}
+        <h2 className="font-semibold mb-2">Style</h2>
+        {styleEntries.length > 0 ? (
+          <ul className="tailor-order-bullet-list">
+            {styleEntries.map(([field, value]) => (
+              <li key={field}><strong>{getStyleFieldLabel(field)}:</strong> {getStyleOptionLabel(field, String(value))}</li>
+            ))}
+          </ul>
+        ) : <p>No style options recorded.</p>}
       </section>
 
       {/* Workflow Action Buttons for Tailor */}

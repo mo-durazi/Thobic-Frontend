@@ -98,9 +98,13 @@
   color: var(--color-text);
 }
 
-.tailor-order-style-summary {
-  color: var(--color-text-muted);
-  line-height: 1.8;
+.tailor-order-details section.bg-white ul.tailor-order-bullet-list {
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.tailor-order-details section.bg-white ul.tailor-order-bullet-list li {
+  padding: 7px 0;
 }
 
 /* Workflow */
