@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 
 import { UserContext } from '../../contexts/UserContext';
 import { getShopProfile } from '../../services/shopService';
+import ShopPhotoPlaceholder from '../ShopPhotoPlaceholder/ShopPhotoPlaceholder';
 
 import './ShopProfile.css';
 
@@ -85,13 +86,16 @@ const ShopProfile = () => {
   return (
     <main className="shop-profile">
       <header className="shop-profile-header">
-        <h1>{shop.display_name}</h1>
+        <ShopPhotoPlaceholder className="shop-photo-placeholder-profile" />
+        <div className="shop-profile-heading">
+          <h1>{shop.display_name}</h1>
 
-        {shop.status && (
-          <span className={`shop-status shop-status-${shop.status}`}>
-            {STATUS_LABELS[shop.status] ?? shop.status}
-          </span>
-        )}
+          {shop.status && (
+            <span className={`shop-status shop-status-${shop.status}`}>
+              {STATUS_LABELS[shop.status] ?? shop.status}
+            </span>
+          )}
+        </div>
       </header>
 
       <section className="shop-profile-info">
