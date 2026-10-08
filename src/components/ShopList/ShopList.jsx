@@ -85,8 +85,8 @@ const ShopList = () => {
           <option value="closed">Closed</option>
         </select>
 
-        <button type="submit">Search</button>
-        <button type="button" onClick={handleClear}>
+        <button className="button-primary" type="submit">Search</button>
+        <button className="button-secondary" type="button" onClick={handleClear}>
           Clear
         </button>
       </form>

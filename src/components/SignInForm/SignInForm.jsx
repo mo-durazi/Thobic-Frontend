@@ -81,8 +81,8 @@ const SignInForm = () => {
           />
         </div>
         <div>
-          <button>Sign In</button>
-          <button onClick={() => navigate('/')}>Cancel</button>
+          <button className="button-primary" type="submit">Sign In</button>
+          <button className="button-secondary" type="button" onClick={() => navigate('/')}>Cancel</button>
         </div>
       </form>
     </main>
